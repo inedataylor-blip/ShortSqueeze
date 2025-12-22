@@ -1,0 +1,33 @@
+# Short Squeeze Trading Bot Dependencies
+
+# Trading and Market Data
+alpaca-trade-api>=3.0.0
+yfinance>=0.2.28
+
+# Web Scraping (for Finviz)
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Data Analysis
+pandas>=2.0.0
+numpy>=1.24.0
+
+# Technical Analysis
+ta>=0.10.2
+
+# Scheduling
+schedule>=1.2.0
+APScheduler>=3.10.0
+
+# Configuration
+python-dotenv>=1.0.0
+
+# Logging
+loguru>=0.7.0
+
+# Rate Limiting
+ratelimit>=2.2.1
+
+# Type hints
+typing-extensions>=4.7.0
