@@ -43,6 +43,7 @@ class FinvizScraper:
                       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         "Accept-Language": "en-US,en;q=0.5",
+        "Referer": "https://finviz.com/screener.ashx",
     }
 
     def __init__(self, config: ScreeningConfig):
@@ -58,14 +59,8 @@ class FinvizScraper:
         """
         logger.info("Scraping Finviz for high short interest stocks...")
 
-        # Build filter parameters
-        # f: filters
-        # v: view (111 = overview with custom columns)
-        # Short Float Over 20%: sh_short_o20
-        # Price Over 5: sh_price_o5
-        # Average Volume Over 1M: sh_avgvol_o1000
-        # Market Cap Over 300M: cap_smallover (> $300M)
-
+        # Build filter parameters for short float > 20%
+        # Using view 152 which includes short float column
         filters = [
             "sh_short_o20",  # Short float over 20%
             "sh_price_o5",   # Price over $5
@@ -73,73 +68,140 @@ class FinvizScraper:
             "cap_smallover",  # Market cap > $300M
         ]
 
-        params = {
-            "v": "152",  # Custom view with short float
-            "f": ",".join(filters),
-            "o": "-shortinterestshare",  # Sort by short interest descending
-        }
-
         all_stocks = []
         page = 1
         rows_per_page = 20
 
         while True:
-            params["r"] = (page - 1) * rows_per_page + 1
-            url = f"{self.BASE_URL}?{'&'.join(f'{k}={v}' for k, v in params.items())}"
+            row_start = (page - 1) * rows_per_page + 1
+            url = f"{self.BASE_URL}?v=152&f={','.join(filters)}&r={row_start}"
 
             try:
                 response = _rate_limited_request(url, self.HEADERS)
                 response.raise_for_status()
+                logger.debug(f"Fetched page {page}, status: {response.status_code}")
             except requests.RequestException as e:
                 logger.error(f"Failed to fetch Finviz page {page}: {e}")
                 break
 
             soup = BeautifulSoup(response.text, "lxml")
-            table = soup.find("table", {"class": "table-light"})
+
+            # Try multiple table selectors (Finviz changes their layout)
+            table = None
+            for selector in [
+                {"class": "table-light"},
+                {"class": "screener_table"},
+                {"id": "screener-table"},
+                {"class": "screener-body-table-nw"},
+            ]:
+                table = soup.find("table", selector)
+                if table:
+                    break
+
+            # Fallback: find table containing stock tickers
+            if not table:
+                tables = soup.find_all("table")
+                for t in tables:
+                    if t.find("a", {"class": "screener-link-primary"}):
+                        table = t
+                        break
 
             if not table:
-                logger.debug(f"No more data found on page {page}")
+                # Check if we got a "no results" page
+                if "No results found" in response.text or page > 1:
+                    logger.debug(f"No more data found on page {page}")
+                else:
+                    logger.warning("Could not find stock table in Finviz response")
                 break
 
-            rows = table.find_all("tr")[1:]  # Skip header row
-
-            if not rows:
-                break
+            # Find all rows with stock data
+            rows = table.find_all("tr")
+            stocks_found = 0
 
             for row in rows:
                 cols = row.find_all("td")
-                if len(cols) >= 10:
-                    try:
-                        ticker = cols[1].text.strip()
-                        company = cols[2].text.strip()
-                        sector = cols[3].text.strip()
-                        industry = cols[4].text.strip()
-                        market_cap = self._parse_market_cap(cols[6].text.strip())
-                        price = self._parse_float(cols[8].text.strip())
-                        short_float = self._parse_percentage(cols[9].text.strip())
+                if len(cols) < 8:
+                    continue
 
-                        if all([ticker, market_cap, price, short_float is not None]):
-                            all_stocks.append({
-                                "ticker": ticker,
-                                "company": company,
-                                "sector": sector,
-                                "industry": industry,
-                                "market_cap": market_cap,
-                                "price": price,
-                                "short_float_pct": short_float,
-                            })
-                    except (IndexError, ValueError) as e:
-                        logger.debug(f"Error parsing row: {e}")
+                try:
+                    # Find ticker - usually in an anchor tag with specific class
+                    ticker_elem = row.find("a", {"class": "screener-link-primary"})
+                    if not ticker_elem:
+                        # Try finding first anchor in row that looks like a ticker
+                        for a in row.find_all("a"):
+                            text = a.text.strip()
+                            if text and text.isupper() and len(text) <= 5:
+                                ticker_elem = a
+                                break
+
+                    if not ticker_elem:
                         continue
 
-            logger.debug(f"Page {page}: Found {len(rows)} stocks")
-            page += 1
+                    ticker = ticker_elem.text.strip()
+                    if not ticker or not ticker.isupper():
+                        continue
 
-            # Safety limit
+                    # Parse other columns - index depends on view
+                    # View 152 columns: No, Ticker, Company, Sector, Industry, Country, Market Cap, P/E, Price, Change, Volume, Short Float
+                    col_texts = [c.text.strip() for c in cols]
+
+                    # Find indices by looking for patterns
+                    company = ""
+                    sector = ""
+                    industry = ""
+                    market_cap = None
+                    price = None
+                    short_float = None
+
+                    for i, text in enumerate(col_texts):
+                        if text == ticker:
+                            # Typically: ticker at i, company at i+1
+                            if i + 1 < len(col_texts):
+                                company = col_texts[i + 1]
+                            continue
+                        # Market cap pattern (ends with B, M, K)
+                        if text and text[-1] in "BMK" and market_cap is None:
+                            parsed = self._parse_market_cap(text)
+                            if parsed and parsed > 1e6:
+                                market_cap = parsed
+                        # Percentage pattern (ends with %)
+                        if text.endswith("%") and short_float is None:
+                            parsed = self._parse_percentage(text)
+                            if parsed is not None and parsed > 0:
+                                short_float = parsed
+                        # Price pattern (looks like a number)
+                        if price is None:
+                            parsed = self._parse_float(text)
+                            if parsed is not None and 1 < parsed < 10000:
+                                price = parsed
+
+                    # If we found key data, add it
+                    if ticker and short_float is not None and short_float >= 20:
+                        all_stocks.append({
+                            "ticker": ticker,
+                            "company": company,
+                            "sector": sector,
+                            "industry": industry,
+                            "market_cap": market_cap,
+                            "price": price,
+                            "short_float_pct": short_float,
+                        })
+                        stocks_found += 1
+
+                except Exception as e:
+                    logger.debug(f"Error parsing row: {e}")
+                    continue
+
+            logger.debug(f"Page {page}: Found {stocks_found} stocks")
+
+            if stocks_found == 0:
+                break
+
+            page += 1
             if page > 50:
                 break
 
-            time.sleep(0.5)  # Be nice to Finviz
+            time.sleep(0.5)
 
         df = pd.DataFrame(all_stocks)
         logger.info(f"Found {len(df)} stocks from Finviz with short float > 20%")
@@ -346,7 +408,21 @@ class AlpacaDataClient:
             )
 
             bars = self.data_client.get_stock_bars(request)
-            data = bars.get(symbol, [])
+
+            # Handle different response formats from Alpaca SDK
+            try:
+                # Try accessing as dict-like object
+                if hasattr(bars, 'data') and symbol in bars.data:
+                    data = bars.data[symbol]
+                elif symbol in bars:
+                    data = bars[symbol]
+                else:
+                    # Try to get data directly
+                    data = list(bars)
+                    if data and hasattr(data[0], 'symbol'):
+                        data = [b for b in data if b.symbol == symbol]
+            except (KeyError, TypeError):
+                data = []
 
             if not data:
                 return pd.DataFrame()
@@ -460,6 +536,16 @@ class AlpacaDataClient:
 class DataManager:
     """Unified data manager combining all data sources."""
 
+    # Known high short interest stocks to check when Finviz fails
+    # These are commonly shorted stocks that often appear in squeeze plays
+    FALLBACK_TICKERS = [
+        "GME", "AMC", "BBBY", "KOSS", "EXPR", "NAKD", "SNDL", "BB", "NOK",
+        "CLOV", "WISH", "WKHS", "GOEV", "RIDE", "NKLA", "SPCE", "PLTR",
+        "FUBO", "SKLZ", "ATER", "BBIG", "PROG", "SDC", "IRNT", "OPAD",
+        "VIR", "BKKT", "RDBX", "EVTL", "MULN", "APRN", "CVNA", "UPST",
+        "BYND", "PLUG", "FCEL", "BLNK", "QS", "LAZR", "VLDR", "HYLN",
+    ]
+
     def __init__(self, config: Config):
         self.config = config
         self.finviz = FinvizScraper(config.screening)
@@ -477,7 +563,14 @@ class DataManager:
         df = self.finviz.get_high_short_interest_stocks()
 
         if df.empty:
-            logger.warning("No candidates found from Finviz")
+            logger.warning("No candidates found from Finviz, using Yahoo fallback")
+            df = self._get_candidates_from_yahoo()
+            if not df.empty:
+                # Yahoo data already verified, just return it
+                return df
+
+        if df.empty:
+            logger.warning("No candidates found from any source")
             return df
 
         # Verify and enrich with Yahoo data
@@ -514,3 +607,52 @@ class DataManager:
         result = pd.DataFrame(verified)
         logger.info(f"Verified {len(result)} squeeze candidates after Yahoo verification")
         return result
+
+    def _get_candidates_from_yahoo(self) -> pd.DataFrame:
+        """
+        Fallback: Get candidates directly from Yahoo Finance.
+
+        Checks a list of known high short interest stocks.
+        """
+        logger.info("Checking known high short interest stocks via Yahoo Finance...")
+
+        candidates = []
+        for ticker in self.FALLBACK_TICKERS:
+            try:
+                info = self.yahoo.get_stock_info(ticker)
+
+                short_pct = info.get("short_percent_of_float")
+                price = info.get("price")
+                market_cap = info.get("market_cap")
+                avg_volume = info.get("avg_volume")
+
+                # Apply filters
+                if short_pct is None or short_pct < self.config.screening.min_short_float_pct:
+                    continue
+                if price is None or price < self.config.screening.min_price:
+                    continue
+                if market_cap is None or market_cap < self.config.screening.min_market_cap:
+                    continue
+
+                candidates.append({
+                    "ticker": ticker,
+                    "company": info.get("name", ""),
+                    "sector": info.get("sector", ""),
+                    "industry": info.get("industry", ""),
+                    "market_cap": market_cap,
+                    "price": price,
+                    "short_float_pct": short_pct,
+                    "avg_volume": avg_volume,
+                })
+
+                logger.debug(f"{ticker}: {short_pct:.1f}% short interest")
+
+            except Exception as e:
+                logger.debug(f"Error checking {ticker}: {e}")
+                continue
+
+            time.sleep(0.1)  # Rate limiting
+
+        df = pd.DataFrame(candidates)
+        logger.info(f"Found {len(df)} candidates from Yahoo fallback")
+        return df
