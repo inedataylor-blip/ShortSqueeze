@@ -378,7 +378,7 @@ class AlpacaDataClient:
     def get_bars(
         self,
         symbol: str,
-        timeframe: TimeFrame = TimeFrame.Minute,
+        timeframe: TimeFrame = TimeFrame.Day,
         start: Optional[datetime] = None,
         end: Optional[datetime] = None,
         limit: int = 1000,
@@ -404,24 +404,31 @@ class AlpacaDataClient:
                 timeframe=timeframe,
                 start=start,
                 end=end,
-                limit=limit,
             )
 
             bars = self.data_client.get_stock_bars(request)
 
             # Handle different response formats from Alpaca SDK
+            data = []
             try:
-                # Try accessing as dict-like object
-                if hasattr(bars, 'data') and symbol in bars.data:
-                    data = bars.data[symbol]
-                elif symbol in bars:
-                    data = bars[symbol]
-                else:
-                    # Try to get data directly
-                    data = list(bars)
-                    if data and hasattr(data[0], 'symbol'):
-                        data = [b for b in data if b.symbol == symbol]
-            except (KeyError, TypeError):
+                # Try accessing as dict-like object with .data attribute
+                if hasattr(bars, 'data'):
+                    bar_data = bars.data
+                    if isinstance(bar_data, dict) and symbol in bar_data:
+                        data = bar_data[symbol]
+                    elif hasattr(bar_data, 'get'):
+                        data = bar_data.get(symbol, [])
+                # Try direct bracket access
+                if not data:
+                    try:
+                        data = bars[symbol]
+                    except (KeyError, TypeError):
+                        pass
+                # Try iterating directly
+                if not data:
+                    data = [b for b in bars if getattr(b, 'symbol', None) == symbol]
+            except Exception as e:
+                logger.debug(f"Error parsing Alpaca response for {symbol}: {e}")
                 data = []
 
             if not data:
@@ -433,17 +440,18 @@ class AlpacaDataClient:
                 "high": float(bar.high),
                 "low": float(bar.low),
                 "close": float(bar.close),
-                "volume": bar.volume,
-                "vwap": float(bar.vwap) if bar.vwap else None,
-                "trade_count": bar.trade_count,
+                "volume": int(bar.volume) if bar.volume else 0,
+                "vwap": float(bar.vwap) if hasattr(bar, 'vwap') and bar.vwap else None,
+                "trade_count": getattr(bar, 'trade_count', 0),
             } for bar in data])
 
             df.set_index("timestamp", inplace=True)
-            df.index = df.index.tz_localize(None) if df.index.tz else df.index
+            if df.index.tz is not None:
+                df.index = df.index.tz_localize(None)
             return df
 
         except Exception as e:
-            logger.error(f"Error fetching bars for {symbol}: {e}")
+            logger.debug(f"Alpaca bars error for {symbol}: {e}")
             return pd.DataFrame()
 
     def get_intraday_bars(
@@ -455,15 +463,13 @@ class AlpacaDataClient:
         """Get intraday minute bars."""
         start = datetime.now() - timedelta(days=days_back)
 
-        if minutes == 1:
-            timeframe = TimeFrame.Minute
-        elif minutes == 5:
-            timeframe = TimeFrame(5, "Min")
-        elif minutes == 15:
-            timeframe = TimeFrame(15, "Min")
-        elif minutes == 60:
-            timeframe = TimeFrame.Hour
-        else:
+        # Use simple TimeFrame constants to avoid SDK compatibility issues
+        try:
+            if minutes >= 60:
+                timeframe = TimeFrame.Hour
+            else:
+                timeframe = TimeFrame.Minute
+        except Exception:
             timeframe = TimeFrame.Minute
 
         return self.get_bars(symbol, timeframe=timeframe, start=start)
