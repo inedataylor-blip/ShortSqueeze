@@ -124,46 +124,73 @@ class SignalDetector:
             EntrySignal if conditions are met, None otherwise
         """
         try:
-            # Get current data from Alpaca
+            # Get stock info from watchlist if not provided
+            if stock_info is None:
+                stock_info = self.watchlist_manager.get_stock_info(ticker) or {}
+
+            # Try to get current price from Alpaca quote first
+            current_price = 0
             quote = self.alpaca.get_latest_quote(ticker)
-            if not quote:
-                logger.debug(f"{ticker}: No quote available")
-                return None
+            if quote:
+                current_price = (quote.get("bid", 0) + quote.get("ask", 0)) / 2
 
-            current_price = (quote.get("bid", 0) + quote.get("ask", 0)) / 2
-            if current_price <= 0:
-                return None
-
-            # Get daily bars for indicators
+            # Get daily bars - try Alpaca first, then Yahoo fallback
             daily_bars = self.alpaca.get_daily_bars(ticker, days=30)
-            if daily_bars.empty or len(daily_bars) < 21:
-                logger.debug(f"{ticker}: Insufficient historical data")
+
+            if daily_bars.empty or len(daily_bars) < 15:
+                logger.debug(f"{ticker}: Alpaca returned insufficient data, trying Yahoo...")
+                yahoo_data = self.yahoo.get_historical_data(ticker, period="1mo", interval="1d")
+                if not yahoo_data.empty:
+                    # Rename columns to match our expected format
+                    daily_bars = yahoo_data.rename(columns={
+                        "Open": "open",
+                        "High": "high",
+                        "Low": "low",
+                        "Close": "close",
+                        "Volume": "volume"
+                    })
+                    # Handle both capitalized and lowercase columns
+                    daily_bars.columns = daily_bars.columns.str.lower()
+                    logger.debug(f"{ticker}: Got {len(daily_bars)} bars from Yahoo")
+
+            if daily_bars.empty or len(daily_bars) < 15:
+                logger.debug(f"{ticker}: Insufficient historical data from all sources")
                 return None
 
             # Get previous close
             previous_close = daily_bars["close"].iloc[-2] if len(daily_bars) >= 2 else 0
-            if previous_close <= 0:
+
+            # If we didn't get a quote from Alpaca, use Yahoo's latest price
+            if current_price <= 0:
+                current_price = daily_bars["close"].iloc[-1]
+                # Also try to get real-time price from Yahoo
+                yahoo_info = self.yahoo.get_stock_info(ticker)
+                if yahoo_info.get("price"):
+                    current_price = yahoo_info["price"]
+                if yahoo_info.get("previous_close"):
+                    previous_close = yahoo_info["previous_close"]
+
+            if current_price <= 0 or previous_close <= 0:
+                logger.debug(f"{ticker}: Invalid price data")
                 return None
 
-            # Get intraday bars for VWAP
+            # Get intraday bars for VWAP (try Alpaca, but don't fail if not available)
             intraday = self.alpaca.get_intraday_bars(ticker, minutes=5, days_back=1)
 
             # Calculate current day's volume
             today = datetime.now().date()
+            current_volume = 0
             if not intraday.empty:
                 today_data = intraday[intraday.index.date == today]
                 current_volume = today_data["volume"].sum() if not today_data.empty else 0
-            else:
-                current_volume = 0
 
             # Get average volume
-            avg_volume = daily_bars["volume"].rolling(20).mean().iloc[-1]
+            avg_volume = daily_bars["volume"].rolling(20, min_periods=5).mean().iloc[-1]
             if pd.isna(avg_volume) or avg_volume <= 0:
                 avg_volume = daily_bars["volume"].mean()
-
-            # Get stock info from watchlist if not provided
-            if stock_info is None:
-                stock_info = self.watchlist_manager.get_stock_info(ticker) or {}
+            # Also check stock_info for avg volume
+            if (pd.isna(avg_volume) or avg_volume <= 0) and stock_info.get("avg_volume"):
+                avg_volume = stock_info["avg_volume"]
 
             # Check entry conditions using technical analyzer
             minutes_since_open = self.get_minutes_since_open()
@@ -173,12 +200,12 @@ class SignalDetector:
 
             # Get current VWAP from intraday data if available
             vwap = 0
-            above_vwap = False
+            above_vwap = True  # Default to True if no intraday data
             if not intraday.empty:
                 intraday_analyzed = self.analyzer.analyze(intraday)
                 if "vwap" in intraday_analyzed.columns:
                     vwap = intraday_analyzed["vwap"].iloc[-1]
-                    above_vwap = current_price > vwap if not pd.isna(vwap) else False
+                    above_vwap = current_price > vwap if not pd.isna(vwap) else True
 
             # Get squeeze state from daily data
             squeeze_state = self.analyzer.get_squeeze_signal(analyzed)
@@ -187,15 +214,16 @@ class SignalDetector:
             price_change_pct = ((current_price - previous_close) / previous_close) * 100
 
             # Calculate volume ratio (adjusted for time of day)
-            if minutes_since_open > 0 and avg_volume > 0:
+            if minutes_since_open > 0 and avg_volume > 0 and current_volume > 0:
                 expected_volume = avg_volume * (minutes_since_open / 390)
                 volume_ratio = current_volume / expected_volume if expected_volume > 0 else 0
             else:
-                volume_ratio = 0
+                # If no intraday volume, use a default ratio based on daily volume
+                volume_ratio = 1.0  # Neutral
 
             # Check primary triggers
             price_trigger = price_change_pct >= self.config.indicators.min_price_change_pct
-            volume_trigger = volume_ratio >= self.config.indicators.volume_multiplier
+            volume_trigger = volume_ratio >= self.config.indicators.volume_multiplier or current_volume == 0
             primary_triggers_met = price_trigger and volume_trigger and above_vwap
 
             # Check squeeze conditions
@@ -207,8 +235,9 @@ class SignalDetector:
 
             if not has_signal:
                 logger.debug(
-                    f"{ticker}: No signal - price={price_trigger}, vol={volume_trigger}, "
-                    f"vwap={above_vwap}, squeeze={squeeze_fired}, mom={momentum_bullish}"
+                    f"{ticker}: No signal - price={price_trigger} ({price_change_pct:.1f}%), "
+                    f"vol={volume_trigger}, vwap={above_vwap}, "
+                    f"squeeze={squeeze_fired}, mom={momentum_bullish}"
                 )
                 return None
 
@@ -227,7 +256,8 @@ class SignalDetector:
             if momentum_bullish:
                 reasons.append("Bullish momentum")
             reasons.append(f"+{price_change_pct:.1f}%")
-            reasons.append(f"{volume_ratio:.1f}x volume")
+            if current_volume > 0:
+                reasons.append(f"{volume_ratio:.1f}x volume")
 
             signal = EntrySignal(
                 ticker=ticker,
