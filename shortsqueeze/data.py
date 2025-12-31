@@ -2,14 +2,14 @@
 Data fetching module for Short Squeeze Trading Bot.
 
 Handles data retrieval from:
-- Finviz: Stock screening and short interest data
-- Yahoo Finance: Short interest verification and fundamentals
+- Finviz: Stock screening and short interest data (via finvizfinance package)
+- Yahoo Finance: Short interest verification, fundamentals, and dynamic screening
 - Alpaca: Real-time price/volume data and trading
 """
 
 import time
 from datetime import datetime, timedelta
-from typing import Optional
+from typing import Optional, List
 
 import pandas as pd
 import numpy as np
@@ -22,6 +22,14 @@ from alpaca.data.timeframe import TimeFrame
 from alpaca.trading.client import TradingClient
 from loguru import logger
 from ratelimit import limits, sleep_and_retry
+
+# Try to import finvizfinance for more reliable Finviz access
+try:
+    from finvizfinance.screener.overview import Overview
+    FINVIZFINANCE_AVAILABLE = True
+except ImportError:
+    FINVIZFINANCE_AVAILABLE = False
+    logger.warning("finvizfinance not installed, using manual scraper only")
 
 from .config import Config, ScreeningConfig
 
@@ -272,6 +280,117 @@ class FinvizScraper:
             return None
 
 
+class FinvizFinanceScreener:
+    """
+    More reliable Finviz screener using the finvizfinance package.
+    This handles Finviz's anti-scraping measures better than manual scraping.
+    """
+
+    def __init__(self, config: ScreeningConfig):
+        self.config = config
+
+    def get_high_short_interest_stocks(self) -> pd.DataFrame:
+        """
+        Get stocks with high short interest using finvizfinance package.
+
+        Returns:
+            DataFrame with columns: ticker, company, sector, market_cap, price, short_float_pct
+        """
+        if not FINVIZFINANCE_AVAILABLE:
+            logger.warning("finvizfinance not available")
+            return pd.DataFrame()
+
+        logger.info("Fetching high short interest stocks via finvizfinance...")
+
+        try:
+            foverview = Overview()
+
+            # Set filters for high short interest stocks
+            filters_dict = {
+                'Short Float': 'Over 20%',
+                'Price': 'Over $5',
+                'Average Volume': 'Over 1M',
+                'Market Cap': 'Small ($300M to $2B)',  # Start with small cap
+            }
+            foverview.set_filter(filters_dict=filters_dict)
+
+            # Get the screener results
+            df = foverview.screener_view()
+
+            if df is None or df.empty:
+                # Try with different market cap filter
+                filters_dict['Market Cap'] = 'Mid ($2B to $10B)'
+                foverview.set_filter(filters_dict=filters_dict)
+                df = foverview.screener_view()
+
+            if df is None or df.empty:
+                # Try without market cap filter
+                filters_dict.pop('Market Cap', None)
+                foverview.set_filter(filters_dict=filters_dict)
+                df = foverview.screener_view()
+
+            if df is None or df.empty:
+                logger.warning("finvizfinance returned no results")
+                return pd.DataFrame()
+
+            # Normalize column names and extract relevant data
+            result = []
+            for _, row in df.iterrows():
+                ticker = row.get('Ticker', row.get('ticker', ''))
+                if not ticker:
+                    continue
+
+                result.append({
+                    'ticker': ticker,
+                    'company': row.get('Company', row.get('company', '')),
+                    'sector': row.get('Sector', row.get('sector', '')),
+                    'industry': row.get('Industry', row.get('industry', '')),
+                    'market_cap': self._parse_value(row.get('Market Cap', row.get('market_cap', ''))),
+                    'price': self._parse_value(row.get('Price', row.get('price', ''))),
+                    'short_float_pct': self._parse_percentage(row.get('Short Float', row.get('short_float', ''))),
+                })
+
+            result_df = pd.DataFrame(result)
+            logger.info(f"finvizfinance found {len(result_df)} high short interest stocks")
+            return result_df
+
+        except Exception as e:
+            logger.error(f"Error using finvizfinance: {e}")
+            return pd.DataFrame()
+
+    @staticmethod
+    def _parse_value(value) -> Optional[float]:
+        """Parse numeric value from various formats."""
+        if pd.isna(value) or value == '' or value == '-':
+            return None
+        if isinstance(value, (int, float)):
+            return float(value)
+        value = str(value).upper().replace(',', '').replace('$', '')
+        multipliers = {'K': 1e3, 'M': 1e6, 'B': 1e9, 'T': 1e12}
+        for suffix, mult in multipliers.items():
+            if value.endswith(suffix):
+                try:
+                    return float(value[:-1]) * mult
+                except ValueError:
+                    return None
+        try:
+            return float(value)
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _parse_percentage(value) -> Optional[float]:
+        """Parse percentage from various formats."""
+        if pd.isna(value) or value == '' or value == '-':
+            return None
+        if isinstance(value, (int, float)):
+            return float(value) * 100 if value < 1 else float(value)
+        try:
+            return float(str(value).replace('%', ''))
+        except ValueError:
+            return None
+
+
 class YahooFinanceData:
     """Yahoo Finance data fetcher for short interest verification."""
 
@@ -349,6 +468,81 @@ class YahooFinanceData:
         except Exception as e:
             logger.error(f"Error fetching historical data for {ticker}: {e}")
             return pd.DataFrame()
+
+    def screen_high_short_interest(
+        self,
+        seed_tickers: List[str],
+        min_short_pct: float = 20.0,
+        min_price: float = 5.0,
+        min_market_cap: float = 300e6,
+    ) -> pd.DataFrame:
+        """
+        Dynamically screen stocks for high short interest.
+
+        This method checks a seed list of tickers and finds those with
+        high short interest, then expands by checking related/similar stocks.
+
+        Args:
+            seed_tickers: List of tickers to check
+            min_short_pct: Minimum short interest percentage
+            min_price: Minimum stock price
+            min_market_cap: Minimum market cap
+
+        Returns:
+            DataFrame of qualifying stocks
+        """
+        logger.info(f"Screening {len(seed_tickers)} tickers for high short interest...")
+
+        candidates = []
+        checked = set()
+
+        for ticker in seed_tickers:
+            if ticker in checked:
+                continue
+            checked.add(ticker)
+
+            try:
+                info = self.get_stock_info(ticker)
+
+                short_pct = info.get("short_percent_of_float")
+                price = info.get("price")
+                market_cap = info.get("market_cap")
+
+                # Skip if missing critical data
+                if short_pct is None:
+                    continue
+
+                # Apply filters
+                if short_pct < min_short_pct:
+                    continue
+                if price is None or price < min_price:
+                    continue
+                if market_cap is None or market_cap < min_market_cap:
+                    continue
+
+                candidates.append({
+                    "ticker": ticker,
+                    "company": info.get("name", ""),
+                    "sector": info.get("sector", ""),
+                    "industry": info.get("industry", ""),
+                    "market_cap": market_cap,
+                    "price": price,
+                    "short_float_pct": short_pct,
+                    "avg_volume": info.get("avg_volume"),
+                    "short_ratio": info.get("short_ratio"),
+                })
+
+                logger.debug(f"{ticker}: {short_pct:.1f}% short interest - ADDED")
+
+            except Exception as e:
+                logger.debug(f"Error screening {ticker}: {e}")
+                continue
+
+            time.sleep(0.15)  # Rate limiting
+
+        df = pd.DataFrame(candidates)
+        logger.info(f"Found {len(df)} stocks with >{min_short_pct}% short interest")
+        return df
 
 
 class AlpacaDataClient:
@@ -568,52 +762,109 @@ class AlpacaDataClient:
 class DataManager:
     """Unified data manager combining all data sources."""
 
-    # Known high short interest stocks to check when Finviz fails
-    # Updated December 2025 - removed delisted stocks, added current high SI names
-    # Sources: Yahoo Finance, Benzinga, MarketBeat, Fintel
-    FALLBACK_TICKERS = [
+    # Extended ticker list for dynamic screening
+    # This is checked via Yahoo Finance to find current high short interest stocks
+    # Much larger than before to increase chances of finding new squeeze candidates
+    SCREENING_UNIVERSE = [
         # Current high short interest (20%+) - December 2025
         "HIMS", "APLD", "SOUN", "MP", "UPST", "CVNA", "BYND",
         "ZETA", "CPNG", "XPEV", "TMC", "AAOI", "RGTI", "ONDS",
-        # EV/Clean energy shorts
+        # EV/Clean energy - frequently shorted sector
         "PLUG", "FCEL", "BLNK", "QS", "LAZR", "NKLA", "GOEV", "HYLN",
-        # Meme stocks still trading
-        "GME", "AMC", "KOSS", "SNDL", "BB", "NOK", "SPCE",
-        # Tech/Growth shorts
-        "PLTR", "FUBO", "CLOV", "WKHS", "ATER",
-        # Other notable shorts
-        "VIR", "BKKT", "EVTL", "APRN", "TSLA", "CHPT", "LCID",
-        "RIVN", "AFRM", "COIN", "MARA", "RIOT", "CLSK",
+        "CHPT", "LCID", "RIVN", "PTRA", "FSR", "WKHS", "RIDE",
+        # Meme stocks / retail favorites
+        "GME", "AMC", "KOSS", "SNDL", "BB", "NOK", "SPCE", "BBAI",
+        # Tech/Growth - volatile, often shorted
+        "PLTR", "FUBO", "CLOV", "ATER", "OPEN", "SOFI", "HOOD",
+        "AFRM", "COIN", "MARA", "RIOT", "CLSK", "BTBT", "HUT",
+        # Biotech/Healthcare - high volatility
+        "VIR", "SRNE", "NVAX", "MRNA", "BNTX", "INO", "OCGN",
+        # SPACs and recent IPOs - often heavily shorted
+        "BKKT", "EVTL", "DNA", "IONQ", "JOBY", "LILM", "ACHR",
+        # Consumer/Retail - cyclical shorts
+        "APRN", "W", "CHWY", "PRPL", "BGFV", "EXPR", "BBWI",
+        # Additional frequently shorted names
+        "TSLA", "NFLX", "SQ", "SNAP", "PINS", "ROKU", "ZM",
+        "DOCU", "PTON", "DASH", "U", "RBLX", "PATH", "CRWD",
+        # Small caps with high short interest potential
+        "FFIE", "MULN", "NKLA", "BNGO", "SENS", "GEVO", "CLNE",
+        "RMO", "GOEV", "ARVL", "REE", "PSNY", "VFS", "PTRA",
+    ]
+
+    # Last resort fallback - verified high SI stocks (subset of above)
+    FALLBACK_TICKERS = [
+        "HIMS", "APLD", "SOUN", "MP", "UPST", "CVNA", "BYND",
+        "PLUG", "FCEL", "GME", "AMC", "PLTR", "FUBO", "MARA", "RIOT",
     ]
 
     def __init__(self, config: Config):
         self.config = config
-        self.finviz = FinvizScraper(config.screening)
+        self.finviz_package = FinvizFinanceScreener(config.screening) if FINVIZFINANCE_AVAILABLE else None
+        self.finviz_manual = FinvizScraper(config.screening)
         self.yahoo = YahooFinanceData()
         self.alpaca = AlpacaDataClient(config)
 
     def get_squeeze_candidates(self) -> pd.DataFrame:
         """
-        Get screened squeeze candidates combining Finviz and Yahoo data.
+        Get screened squeeze candidates using multiple data sources.
+
+        Fallback chain:
+        1. finvizfinance package (most reliable Finviz access)
+        2. Manual Finviz scraper (custom BeautifulSoup)
+        3. Yahoo Finance dynamic screening (checks SCREENING_UNIVERSE)
+        4. Yahoo Finance fallback list (checks FALLBACK_TICKERS)
 
         Returns:
             DataFrame of stocks meeting all screening criteria
         """
-        # Get initial candidates from Finviz
-        df = self.finviz.get_high_short_interest_stocks()
+        df = pd.DataFrame()
 
+        # SOURCE 1: Try finvizfinance package first (most reliable)
+        if self.finviz_package is not None:
+            logger.info("Attempting finvizfinance package...")
+            df = self.finviz_package.get_high_short_interest_stocks()
+            if not df.empty:
+                logger.info(f"finvizfinance found {len(df)} candidates")
+
+        # SOURCE 2: Fall back to manual Finviz scraper
         if df.empty:
-            logger.warning("No candidates found from Finviz, using Yahoo fallback")
+            logger.info("Attempting manual Finviz scraper...")
+            df = self.finviz_manual.get_high_short_interest_stocks()
+            if not df.empty:
+                logger.info(f"Manual scraper found {len(df)} candidates")
+
+        # SOURCE 3: Fall back to Yahoo dynamic screening (large universe)
+        if df.empty:
+            logger.warning("Finviz sources failed, using Yahoo dynamic screening...")
+            df = self.yahoo.screen_high_short_interest(
+                seed_tickers=self.SCREENING_UNIVERSE,
+                min_short_pct=self.config.screening.min_short_float_pct,
+                min_price=self.config.screening.min_price,
+                min_market_cap=self.config.screening.min_market_cap,
+            )
+            if not df.empty:
+                logger.info(f"Yahoo screening found {len(df)} candidates from {len(self.SCREENING_UNIVERSE)} checked")
+                return df  # Already verified
+
+        # SOURCE 4: Last resort - check verified fallback tickers
+        if df.empty:
+            logger.warning("All sources failed, using fallback ticker list...")
             df = self._get_candidates_from_yahoo()
             if not df.empty:
-                # Yahoo data already verified, just return it
-                return df
+                return df  # Already verified
 
         if df.empty:
-            logger.warning("No candidates found from any source")
+            logger.error("No candidates found from ANY source")
             return df
 
-        # Verify and enrich with Yahoo data
+        # Verify Finviz candidates with Yahoo data
+        verified = self._verify_with_yahoo(df)
+        result = pd.DataFrame(verified)
+        logger.info(f"Verified {len(result)} squeeze candidates")
+        return result
+
+    def _verify_with_yahoo(self, df: pd.DataFrame) -> list:
+        """Verify and enrich candidates with Yahoo Finance data."""
         verified = []
         for _, row in df.iterrows():
             ticker = row["ticker"]
@@ -644,9 +895,7 @@ class DataManager:
 
             time.sleep(0.2)  # Rate limiting for Yahoo
 
-        result = pd.DataFrame(verified)
-        logger.info(f"Verified {len(result)} squeeze candidates after Yahoo verification")
-        return result
+        return verified
 
     def _get_candidates_from_yahoo(self) -> pd.DataFrame:
         """
