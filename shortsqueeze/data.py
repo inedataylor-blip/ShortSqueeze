@@ -86,25 +86,41 @@ class FinvizScraper:
 
             soup = BeautifulSoup(response.text, "lxml")
 
-            # Try multiple table selectors (Finviz changes their layout)
+            # Try multiple table selectors (Finviz changes their layout frequently)
             table = None
             for selector in [
-                {"class": "table-light"},
                 {"class": "screener_table"},
-                {"id": "screener-table"},
+                {"class": "table-light"},
                 {"class": "screener-body-table-nw"},
+                {"id": "screener-table"},
+                {"id": "screener-content"},
             ]:
                 table = soup.find("table", selector)
                 if table:
+                    logger.debug(f"Found table with selector: {selector}")
                     break
 
-            # Fallback: find table containing stock tickers
+            # Fallback: find table containing stock tickers by looking for ticker links
             if not table:
                 tables = soup.find_all("table")
                 for t in tables:
-                    if t.find("a", {"class": "screener-link-primary"}):
+                    # Look for ticker links with various class patterns
+                    ticker_link = (
+                        t.find("a", {"class": "screener-link-primary"}) or
+                        t.find("a", {"class": "tab-link"}) or
+                        t.find("a", href=lambda x: x and "quote.ashx" in x)
+                    )
+                    if ticker_link:
                         table = t
+                        logger.debug("Found table via ticker link fallback")
                         break
+
+            # Additional fallback: look for rows with table-light-row class
+            if not table:
+                rows_with_data = soup.find_all("tr", {"class": "table-light-row"})
+                if rows_with_data:
+                    table = rows_with_data[0].find_parent("table")
+                    logger.debug("Found table via table-light-row fallback")
 
             if not table:
                 # Check if we got a "no results" page
@@ -114,23 +130,33 @@ class FinvizScraper:
                     logger.warning("Could not find stock table in Finviz response")
                 break
 
-            # Find all rows with stock data
-            rows = table.find_all("tr")
+            # Find all rows with stock data - try multiple row patterns
+            rows = table.find_all("tr", {"class": ["table-light-row", "table-dark-row"]})
+            if not rows:
+                rows = table.find_all("tr")
             stocks_found = 0
 
             for row in rows:
                 cols = row.find_all("td")
-                if len(cols) < 8:
+                if len(cols) < 6:  # Reduced from 8 to handle different views
                     continue
 
                 try:
-                    # Find ticker - usually in an anchor tag with specific class
-                    ticker_elem = row.find("a", {"class": "screener-link-primary"})
+                    # Find ticker - try multiple class patterns
+                    ticker_elem = (
+                        row.find("a", {"class": "screener-link-primary"}) or
+                        row.find("a", {"class": "tab-link"}) or
+                        row.find("a", href=lambda x: x and "quote.ashx?t=" in x)
+                    )
                     if not ticker_elem:
                         # Try finding first anchor in row that looks like a ticker
                         for a in row.find_all("a"):
                             text = a.text.strip()
-                            if text and text.isupper() and len(text) <= 5:
+                            href = a.get("href", "")
+                            if text and text.isupper() and 1 <= len(text) <= 5:
+                                ticker_elem = a
+                                break
+                            elif "quote.ashx" in href:
                                 ticker_elem = a
                                 break
 
@@ -543,13 +569,21 @@ class DataManager:
     """Unified data manager combining all data sources."""
 
     # Known high short interest stocks to check when Finviz fails
-    # These are commonly shorted stocks that often appear in squeeze plays
+    # Updated December 2025 - removed delisted stocks, added current high SI names
+    # Sources: Yahoo Finance, Benzinga, MarketBeat, Fintel
     FALLBACK_TICKERS = [
-        "GME", "AMC", "BBBY", "KOSS", "EXPR", "NAKD", "SNDL", "BB", "NOK",
-        "CLOV", "WISH", "WKHS", "GOEV", "RIDE", "NKLA", "SPCE", "PLTR",
-        "FUBO", "SKLZ", "ATER", "BBIG", "PROG", "SDC", "IRNT", "OPAD",
-        "VIR", "BKKT", "RDBX", "EVTL", "MULN", "APRN", "CVNA", "UPST",
-        "BYND", "PLUG", "FCEL", "BLNK", "QS", "LAZR", "VLDR", "HYLN",
+        # Current high short interest (20%+) - December 2025
+        "HIMS", "APLD", "SOUN", "MP", "UPST", "CVNA", "BYND",
+        "ZETA", "CPNG", "XPEV", "TMC", "AAOI", "RGTI", "ONDS",
+        # EV/Clean energy shorts
+        "PLUG", "FCEL", "BLNK", "QS", "LAZR", "NKLA", "GOEV", "HYLN",
+        # Meme stocks still trading
+        "GME", "AMC", "KOSS", "SNDL", "BB", "NOK", "SPCE",
+        # Tech/Growth shorts
+        "PLTR", "FUBO", "CLOV", "WKHS", "ATER",
+        # Other notable shorts
+        "VIR", "BKKT", "EVTL", "APRN", "TSLA", "CHPT", "LCID",
+        "RIVN", "AFRM", "COIN", "MARA", "RIOT", "CLSK",
     ]
 
     def __init__(self, config: Config):
@@ -632,12 +666,18 @@ class DataManager:
                 market_cap = info.get("market_cap")
                 avg_volume = info.get("avg_volume")
 
-                # Apply filters
+                # Apply filters with logging
                 if short_pct is None or short_pct < self.config.screening.min_short_float_pct:
+                    if short_pct is not None:
+                        logger.debug(f"{ticker}: short interest {short_pct:.1f}% < {self.config.screening.min_short_float_pct}% min")
                     continue
                 if price is None or price < self.config.screening.min_price:
+                    if price is not None:
+                        logger.debug(f"{ticker}: price ${price:.2f} < ${self.config.screening.min_price} min")
                     continue
                 if market_cap is None or market_cap < self.config.screening.min_market_cap:
+                    if market_cap is not None:
+                        logger.debug(f"{ticker}: market cap ${market_cap/1e6:.0f}M < ${self.config.screening.min_market_cap/1e6:.0f}M min")
                     continue
 
                 candidates.append({
