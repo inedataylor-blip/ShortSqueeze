@@ -157,22 +157,30 @@ class SignalDetector:
                 logger.debug(f"{ticker}: Insufficient historical data from all sources")
                 return None
 
-            # Get previous close
-            previous_close = daily_bars["close"].iloc[-2] if len(daily_bars) >= 2 else 0
+            # Get Yahoo data first for reliable previous_close and current price
+            yahoo_info = self.yahoo.get_stock_info(ticker)
+
+            # Previous close: prioritize Yahoo's previousClose (most reliable)
+            previous_close = yahoo_info.get("previous_close", 0)
+            previous_close_source = "yahoo"
+
+            # Fallback to daily bars if Yahoo doesn't have it
+            if not previous_close or previous_close <= 0:
+                if len(daily_bars) >= 2:
+                    previous_close = daily_bars["close"].iloc[-2]
+                    previous_close_source = "daily_bars"
 
             # If we didn't get a quote from Alpaca, use Yahoo's latest price
             if current_price <= 0:
-                current_price = daily_bars["close"].iloc[-1]
-                # Also try to get real-time price from Yahoo
-                yahoo_info = self.yahoo.get_stock_info(ticker)
-                if yahoo_info.get("price"):
-                    current_price = yahoo_info["price"]
-                if yahoo_info.get("previous_close"):
-                    previous_close = yahoo_info["previous_close"]
+                current_price = yahoo_info.get("price", 0)
+                if current_price <= 0:
+                    current_price = daily_bars["close"].iloc[-1]
 
             if current_price <= 0 or previous_close <= 0:
-                logger.debug(f"{ticker}: Invalid price data")
+                logger.debug(f"{ticker}: Invalid price data (price={current_price}, prev_close={previous_close})")
                 return None
+
+            logger.debug(f"{ticker}: price=${current_price:.2f}, prev_close=${previous_close:.2f} (source: {previous_close_source})")
 
             # Get intraday bars for VWAP (try Alpaca, but don't fail if not available)
             intraday = self.alpaca.get_intraday_bars(ticker, minutes=5, days_back=1)
@@ -234,10 +242,18 @@ class SignalDetector:
             has_signal = primary_triggers_met and (squeeze_fired or momentum_bullish)
 
             if not has_signal:
+                # Enhanced debug logging with actual values
+                vol_info = f"vol={volume_trigger} (ratio={volume_ratio:.1f}x, need {self.config.indicators.volume_multiplier}x)"
+                price_info = f"price={price_trigger} ({price_change_pct:+.1f}%, need +{self.config.indicators.min_price_change_pct}%)"
+                vwap_info = f"vwap={above_vwap}"
+                if vwap > 0:
+                    vwap_info += f" (${current_price:.2f} vs VWAP ${vwap:.2f})"
+                squeeze_info = f"squeeze={squeeze_fired}, mom={momentum_bullish}"
+                if squeeze_state:
+                    squeeze_info += f" (mom_val={squeeze_state.momentum_value:.2f})"
+
                 logger.debug(
-                    f"{ticker}: No signal - price={price_trigger} ({price_change_pct:.1f}%), "
-                    f"vol={volume_trigger}, vwap={above_vwap}, "
-                    f"squeeze={squeeze_fired}, mom={momentum_bullish}"
+                    f"{ticker}: No signal - {price_info}, {vol_info}, {vwap_info}, {squeeze_info}"
                 )
                 return None
 
