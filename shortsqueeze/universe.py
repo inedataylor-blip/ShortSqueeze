@@ -17,6 +17,7 @@ from loguru import logger
 
 from .config import Config
 from .data import DataManager
+from .timezone import now_eastern
 
 
 class WatchlistManager:
@@ -72,7 +73,7 @@ class WatchlistManager:
         self.config.data_dir.mkdir(parents=True, exist_ok=True)
 
         data = {
-            "last_refresh": datetime.now().isoformat(),
+            "last_refresh": now_eastern().isoformat(),
             "stocks": df.to_dict(orient="records"),
         }
 
@@ -80,7 +81,7 @@ class WatchlistManager:
             json.dump(data, f, indent=2, default=str)
 
         self._watchlist = df
-        self._last_refresh = datetime.now()
+        self._last_refresh = now_eastern()
         logger.info(f"Saved watchlist with {len(df)} stocks")
 
     def needs_refresh(self, max_age_days: int = 7) -> bool:
@@ -99,7 +100,7 @@ class WatchlistManager:
         if self._last_refresh is None:
             return True
 
-        age = datetime.now() - self._last_refresh
+        age = now_eastern() - self._last_refresh
         return age > timedelta(days=max_age_days)
 
     def refresh_watchlist(self, force: bool = False) -> pd.DataFrame:
@@ -282,9 +283,9 @@ class WatchlistManager:
 
 def should_refresh_today() -> bool:
     """
-    Check if today is a refresh day (Sunday).
+    Check if today is a refresh day (Sunday) in US Eastern timezone.
 
     The watchlist is designed to be refreshed weekly on Sundays
     when the market is closed.
     """
-    return datetime.now().weekday() == 6  # Sunday = 6
+    return now_eastern().weekday() == 6  # Sunday = 6

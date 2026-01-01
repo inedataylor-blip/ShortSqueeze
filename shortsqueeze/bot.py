@@ -8,7 +8,7 @@ Handles:
 """
 
 import time
-from datetime import datetime, time as dt_time
+from datetime import datetime
 from typing import Optional
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -17,6 +17,7 @@ from apscheduler.triggers.interval import IntervalTrigger
 from loguru import logger
 
 from .config import Config
+from .timezone import EASTERN_TZ, is_market_hours, now_eastern
 from .data import AlpacaDataClient
 from .universe import WatchlistManager
 from .signals import SignalDetector, SignalFilter
@@ -26,10 +27,6 @@ from .trader import TradeManager
 
 class ShortSqueezeBot:
     """Main trading bot orchestrator."""
-
-    # Market hours (Eastern Time)
-    MARKET_OPEN = dt_time(9, 30)
-    MARKET_CLOSE = dt_time(16, 0)
 
     def __init__(self, config: Optional[Config] = None):
         """Initialize the bot with configuration."""
@@ -118,7 +115,7 @@ class ShortSqueezeBot:
         # Weekly watchlist refresh - Sunday at 6 PM ET
         self.scheduler.add_job(
             self._refresh_watchlist,
-            CronTrigger(day_of_week="sun", hour=18, minute=0),
+            CronTrigger(day_of_week="sun", hour=18, minute=0, timezone=EASTERN_TZ),
             id="weekly_refresh",
             name="Weekly Watchlist Refresh",
         )
@@ -135,16 +132,8 @@ class ShortSqueezeBot:
         logger.info("Jobs scheduled")
 
     def _is_market_hours(self) -> bool:
-        """Check if we're in market hours."""
-        now = datetime.now()
-
-        # Check weekday
-        if now.weekday() >= 5:
-            return False
-
-        # Check time
-        current_time = now.time()
-        return self.MARKET_OPEN <= current_time <= self.MARKET_CLOSE
+        """Check if we're in market hours (US Eastern Time)."""
+        return is_market_hours()
 
     def _run_scan(self) -> None:
         """Run the intraday scan for signals."""
@@ -308,7 +297,7 @@ class ShortSqueezeBot:
         logger.info("Running single scan cycle...")
 
         result = {
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": now_eastern().isoformat(),
             "market_open": self._is_market_hours(),
             "signals": [],
             "trades": [],
