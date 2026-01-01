@@ -306,11 +306,12 @@ class FinvizFinanceScreener:
             foverview = Overview()
 
             # Set filters for high short interest stocks
+            # Note: Filter names must match exactly (e.g., 'Market Cap.' with period)
             filters_dict = {
                 'Float Short': 'Over 20%',
                 'Price': 'Over $5',
                 'Average Volume': 'Over 1M',
-                'Market Cap': 'Small ($300M to $2B)',  # Start with small cap
+                'Market Cap.': 'Small ($300mln to $2bln)',  # Start with small cap
             }
             foverview.set_filter(filters_dict=filters_dict)
 
@@ -319,13 +320,13 @@ class FinvizFinanceScreener:
 
             if df is None or df.empty:
                 # Try with different market cap filter
-                filters_dict['Market Cap'] = 'Mid ($2B to $10B)'
+                filters_dict['Market Cap.'] = 'Mid ($2bln to $10bln)'
                 foverview.set_filter(filters_dict=filters_dict)
                 df = foverview.screener_view()
 
             if df is None or df.empty:
                 # Try without market cap filter
-                filters_dict.pop('Market Cap', None)
+                filters_dict.pop('Market Cap.', None)
                 foverview.set_filter(filters_dict=filters_dict)
                 df = foverview.screener_view()
 
