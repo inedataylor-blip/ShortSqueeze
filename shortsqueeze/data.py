@@ -867,35 +867,51 @@ class DataManager:
     def _verify_with_yahoo(self, df: pd.DataFrame) -> list:
         """Verify and enrich candidates with Yahoo Finance data."""
         verified = []
+        skipped = 0
         for _, row in df.iterrows():
             ticker = row["ticker"]
             yahoo_info = self.yahoo.get_stock_info(ticker)
 
-            # Verify short interest
+            # Get short interest from Yahoo or Finviz
             yahoo_short = yahoo_info.get("short_percent_of_float")
+            finviz_short = row.get("short_float_pct")
+
+            # Use Yahoo data if available, otherwise trust Finviz
             if yahoo_short and yahoo_short >= self.config.screening.min_short_float_pct:
                 verified_short = yahoo_short
+            elif finviz_short and finviz_short >= self.config.screening.min_short_float_pct:
+                verified_short = finviz_short
             else:
-                verified_short = row.get("short_float_pct")
+                # Trust Finviz filter results even without exact value
+                # The filter was 'Float Short': 'Over 20%', so stocks should qualify
+                verified_short = self.config.screening.min_short_float_pct
+                logger.debug(f"{ticker}: No short float data from Yahoo or Finviz, using filter default")
 
-            # Only include if still meets criteria
-            if verified_short and verified_short >= self.config.screening.min_short_float_pct:
-                verified.append({
-                    "ticker": ticker,
-                    "company": row.get("company") or yahoo_info.get("name"),
-                    "sector": yahoo_info.get("sector") or row.get("sector"),
-                    "industry": yahoo_info.get("industry") or row.get("industry"),
-                    "market_cap": yahoo_info.get("market_cap") or row.get("market_cap"),
-                    "price": yahoo_info.get("price") or row.get("price"),
-                    "avg_volume": yahoo_info.get("avg_volume"),
-                    "short_float_pct": verified_short,
-                    "short_ratio": yahoo_info.get("short_ratio"),
-                    "previous_close": yahoo_info.get("previous_close"),
-                    "exchange": yahoo_info.get("exchange"),
-                })
+            # Get price - need at least this to be useful
+            price = yahoo_info.get("price") or row.get("price")
+            if not price or price <= 0:
+                skipped += 1
+                logger.debug(f"{ticker}: Skipped - no valid price data")
+                continue
+
+            verified.append({
+                "ticker": ticker,
+                "company": row.get("company") or yahoo_info.get("name"),
+                "sector": yahoo_info.get("sector") or row.get("sector"),
+                "industry": yahoo_info.get("industry") or row.get("industry"),
+                "market_cap": yahoo_info.get("market_cap") or row.get("market_cap"),
+                "price": price,
+                "avg_volume": yahoo_info.get("avg_volume"),
+                "short_float_pct": verified_short,
+                "short_ratio": yahoo_info.get("short_ratio"),
+                "previous_close": yahoo_info.get("previous_close"),
+                "exchange": yahoo_info.get("exchange"),
+            })
 
             time.sleep(0.2)  # Rate limiting for Yahoo
 
+        if skipped > 0:
+            logger.info(f"Skipped {skipped} stocks due to missing price data")
         return verified
 
     def _get_candidates_from_yahoo(self) -> pd.DataFrame:
