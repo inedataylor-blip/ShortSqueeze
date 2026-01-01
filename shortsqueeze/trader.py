@@ -35,6 +35,7 @@ from loguru import logger
 from .config import Config
 from .position import PositionSize
 from .signals import EntrySignal
+from .timezone import now_eastern
 
 
 class TradeStatus(Enum):
@@ -135,7 +136,7 @@ class TradeExecutor:
                 quantity=quantity,
                 order_type="market",
                 status=order.status.value,
-                timestamp=datetime.now(),
+                timestamp=now_eastern(),
                 order_id=str(order.id),
                 client_order_id=order.client_order_id,
             )
@@ -185,7 +186,7 @@ class TradeExecutor:
                 quantity=quantity,
                 order_type="limit",
                 status=order.status.value,
-                timestamp=datetime.now(),
+                timestamp=now_eastern(),
                 limit_price=limit_price,
                 order_id=str(order.id),
                 client_order_id=order.client_order_id,
@@ -238,7 +239,7 @@ class TradeExecutor:
                 quantity=quantity,
                 order_type="stop",
                 status=order.status.value,
-                timestamp=datetime.now(),
+                timestamp=now_eastern(),
                 stop_price=stop_price,
                 order_id=str(order.id),
                 client_order_id=order.client_order_id,
@@ -287,7 +288,7 @@ class TradeExecutor:
                 quantity=quantity,
                 order_type="bracket",
                 status=order.status.value,
-                timestamp=datetime.now(),
+                timestamp=now_eastern(),
                 limit_price=limit_price,
                 stop_loss_price=stop_loss_price,
                 take_profit_price=take_profit_price,
@@ -382,7 +383,7 @@ class TradeExecutor:
                 quantity=int(float(order.qty)),
                 order_type="market",
                 status=order.status.value,
-                timestamp=datetime.now(),
+                timestamp=now_eastern(),
                 order_id=str(order.id),
                 reason="position_close",
             )

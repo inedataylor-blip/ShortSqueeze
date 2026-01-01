@@ -7,7 +7,7 @@ Handles intraday scanning and entry signal detection based on:
 """
 
 from dataclasses import dataclass, field
-from datetime import datetime, time
+from datetime import datetime
 from typing import Optional
 
 import pandas as pd
@@ -16,6 +16,7 @@ from loguru import logger
 from .config import Config
 from .data import AlpacaDataClient, YahooFinanceData
 from .indicators import TechnicalAnalyzer, SqueezeState
+from .timezone import is_market_hours, get_minutes_since_open, now_eastern
 from .universe import WatchlistManager
 
 
@@ -79,10 +80,6 @@ class ScanResult:
 class SignalDetector:
     """Detects entry signals for short squeeze trades."""
 
-    # Market hours (Eastern Time)
-    MARKET_OPEN = time(9, 30)
-    MARKET_CLOSE = time(16, 0)
-
     def __init__(self, config: Config):
         self.config = config
         self.alpaca = AlpacaDataClient(config)
@@ -91,26 +88,12 @@ class SignalDetector:
         self.watchlist_manager = WatchlistManager(config)
 
     def is_market_open(self) -> bool:
-        """Check if the market is currently open."""
-        now = datetime.now()
-
-        # Check if it's a weekday
-        if now.weekday() >= 5:  # Saturday = 5, Sunday = 6
-            return False
-
-        current_time = now.time()
-        return self.MARKET_OPEN <= current_time <= self.MARKET_CLOSE
+        """Check if the market is currently open (US Eastern Time)."""
+        return is_market_hours()
 
     def get_minutes_since_open(self) -> int:
-        """Get number of minutes since market open."""
-        now = datetime.now()
-        market_open = datetime.combine(now.date(), self.MARKET_OPEN)
-
-        if now < market_open:
-            return 0
-
-        delta = now - market_open
-        return int(delta.total_seconds() / 60)
+        """Get number of minutes since market open (US Eastern Time)."""
+        return get_minutes_since_open()
 
     def scan_stock(self, ticker: str, stock_info: Optional[dict] = None) -> Optional[EntrySignal]:
         """
@@ -186,7 +169,7 @@ class SignalDetector:
             intraday = self.alpaca.get_intraday_bars(ticker, minutes=5, days_back=1)
 
             # Calculate current day's volume
-            today = datetime.now().date()
+            today = now_eastern().date()
             current_volume = 0
             if not intraday.empty:
                 today_data = intraday[intraday.index.date == today]
@@ -277,7 +260,7 @@ class SignalDetector:
 
             signal = EntrySignal(
                 ticker=ticker,
-                timestamp=datetime.now(),
+                timestamp=now_eastern(),
                 signal_strength=strength,
                 current_price=current_price,
                 previous_close=previous_close,
@@ -317,7 +300,7 @@ class SignalDetector:
             ScanResult with detected signals
         """
         result = ScanResult(
-            timestamp=datetime.now(),
+            timestamp=now_eastern(),
             stocks_scanned=0,
         )
 
@@ -383,7 +366,7 @@ class SignalDetector:
             "previous_close": previous_close,
             "change_pct": change_pct,
             "meets_price_trigger": change_pct >= self.config.indicators.min_price_change_pct,
-            "timestamp": datetime.now().isoformat(),
+            "timestamp": now_eastern().isoformat(),
         }
 
 
