@@ -419,9 +419,9 @@ def run_bot():
         level="INFO",
     )
     logger.add(
-        "logs/bot.log",
-        rotation="10 MB",
-        retention="7 days",
+        "logs/bot_{time:YYYY-MM-DD}.log",
+        rotation="00:00",  # Rotate at midnight
+        retention="30 days",
         format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function} - {message}",
         level="DEBUG",
     )
