@@ -307,7 +307,7 @@ class FinvizFinanceScreener:
 
             # Set filters for high short interest stocks
             filters_dict = {
-                'Short Float': 'Over 20%',
+                'Float Short': 'Over 20%',
                 'Price': 'Over $5',
                 'Average Volume': 'Over 1M',
                 'Market Cap': 'Small ($300M to $2B)',  # Start with small cap
@@ -347,7 +347,7 @@ class FinvizFinanceScreener:
                     'industry': row.get('Industry', row.get('industry', '')),
                     'market_cap': self._parse_value(row.get('Market Cap', row.get('market_cap', ''))),
                     'price': self._parse_value(row.get('Price', row.get('price', ''))),
-                    'short_float_pct': self._parse_percentage(row.get('Short Float', row.get('short_float', ''))),
+                    'short_float_pct': self._parse_percentage(row.get('Float Short', row.get('Short Float', row.get('short_float', '')))),
                 })
 
             result_df = pd.DataFrame(result)
