@@ -80,7 +80,7 @@ class RiskConfig:
 @dataclass
 class TradingConfig:
     """Trading execution configuration."""
-    scan_interval_minutes: int = 5
+    scan_interval_minutes: int = 15  # Scan every 15 minutes during market hours
     use_limit_orders: bool = True
     limit_offset_pct: float = 0.001  # 0.1% above current price for limits
     order_timeout_seconds: int = 30

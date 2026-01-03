@@ -420,7 +420,7 @@ def run_bot():
     )
     logger.add(
         "logs/bot_{time:YYYY-MM-DD}.log",
-        rotation="00:00",  # Rotate at midnight
+        rotation="16:00",  # Rotate at market close (4 PM ET)
         retention="30 days",
         format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function} - {message}",
         level="DEBUG",
