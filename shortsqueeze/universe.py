@@ -84,12 +84,12 @@ class WatchlistManager:
         self._last_refresh = now_eastern()
         logger.info(f"Saved watchlist with {len(df)} stocks")
 
-    def needs_refresh(self, max_age_days: int = 7) -> bool:
+    def needs_refresh(self, max_age_days: int = 1) -> bool:
         """
         Check if watchlist needs refreshing.
 
         Args:
-            max_age_days: Maximum age in days before refresh needed
+            max_age_days: Maximum age in days before refresh needed (default: 1 for daily refresh)
 
         Returns:
             True if refresh is needed

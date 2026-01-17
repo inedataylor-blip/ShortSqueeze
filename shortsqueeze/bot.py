@@ -112,12 +112,12 @@ class ShortSqueezeBot:
             max_instances=1,
         )
 
-        # Weekly watchlist refresh - Sunday at 6 PM ET
+        # Daily watchlist refresh - Every day at 6:00 AM ET (before market open)
         self.scheduler.add_job(
             self._refresh_watchlist,
-            CronTrigger(day_of_week="sun", hour=18, minute=0, timezone=EASTERN_TZ),
-            id="weekly_refresh",
-            name="Weekly Watchlist Refresh",
+            CronTrigger(hour=6, minute=0, timezone=EASTERN_TZ),
+            id="daily_refresh",
+            name="Daily Watchlist Refresh",
         )
 
         # Position monitoring - every minute during market hours
