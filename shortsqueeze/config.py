@@ -41,7 +41,9 @@ class ScreeningConfig:
     min_short_float_pct: float = 20.0  # Minimum short % of float
     min_market_cap: float = 300_000_000  # $300M minimum
     min_avg_volume: int = 1_000_000  # 1M shares minimum
-    min_price: float = 5.0  # $5 minimum (avoid penny stocks)
+    # Dual watchlist price thresholds
+    quality_min_price: float = 5.0  # Quality watchlist: $5+ (established companies)
+    speculative_min_price: float = 1.0  # Speculative watchlist: $1-$5 (higher risk)
     exchanges: tuple = ("NYSE", "NASDAQ", "AMEX")
 
 
@@ -132,9 +134,19 @@ class Config:
         return config
 
     @property
+    def watchlist_quality_path(self) -> Path:
+        """Path to quality watchlist JSON file ($5+ stocks)."""
+        return self.data_dir / "watchlist_quality.json"
+
+    @property
+    def watchlist_speculative_path(self) -> Path:
+        """Path to speculative watchlist JSON file (<$5 stocks)."""
+        return self.data_dir / "watchlist_speculative.json"
+
+    @property
     def watchlist_path(self) -> Path:
-        """Path to watchlist JSON file."""
-        return self.data_dir / "watchlist.json"
+        """Path to watchlist JSON file (legacy, points to quality)."""
+        return self.watchlist_quality_path
 
     @property
     def trades_path(self) -> Path:

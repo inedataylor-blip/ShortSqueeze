@@ -392,6 +392,276 @@ class FinvizFinanceScreener:
             return None
 
 
+class HighShortInterestScraper:
+    """
+    Scraper for highshortinterest.com - provides a simple list of most shorted stocks.
+
+    This site lists stocks sorted by short interest percentage, making it a good
+    supplementary source for finding squeeze candidates.
+    """
+
+    BASE_URL = "https://highshortinterest.com"
+    HEADERS = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                      "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Connection": "keep-alive",
+    }
+
+    def __init__(self, config: ScreeningConfig):
+        self.config = config
+
+    def get_high_short_interest_stocks(self) -> pd.DataFrame:
+        """
+        Scrape highshortinterest.com for stocks with high short interest.
+
+        Returns:
+            DataFrame with columns: ticker, company, exchange, short_float_pct, float_shares, outstd_shares, industry
+        """
+        logger.info("Scraping highshortinterest.com for high short interest stocks...")
+
+        all_stocks = []
+
+        try:
+            response = requests.get(self.BASE_URL, headers=self.HEADERS, timeout=30)
+            response.raise_for_status()
+
+            soup = BeautifulSoup(response.text, "lxml")
+
+            # Find the main data table
+            tables = soup.find_all("table")
+
+            for table in tables:
+                rows = table.find_all("tr")
+
+                for row in rows:
+                    cols = row.find_all("td")
+                    if len(cols) < 5:
+                        continue
+
+                    try:
+                        # Typical structure: Ticker, Company, Exchange, ShortInt, Float, Outstd, Industry
+                        ticker = cols[0].text.strip().upper()
+
+                        # Validate ticker format
+                        if not ticker or not ticker.isalpha() or len(ticker) > 5:
+                            continue
+
+                        company = cols[1].text.strip() if len(cols) > 1 else ""
+                        exchange = cols[2].text.strip() if len(cols) > 2 else ""
+
+                        # Parse short interest percentage
+                        short_pct_text = cols[3].text.strip() if len(cols) > 3 else ""
+                        short_float_pct = self._parse_percentage(short_pct_text)
+
+                        if short_float_pct is None or short_float_pct < 10:
+                            continue
+
+                        # Parse float and outstanding shares
+                        float_shares = self._parse_shares(cols[4].text.strip()) if len(cols) > 4 else None
+                        outstd_shares = self._parse_shares(cols[5].text.strip()) if len(cols) > 5 else None
+                        industry = cols[6].text.strip() if len(cols) > 6 else ""
+
+                        all_stocks.append({
+                            "ticker": ticker,
+                            "company": company,
+                            "exchange": exchange,
+                            "short_float_pct": short_float_pct,
+                            "float_shares": float_shares,
+                            "shares_outstanding": outstd_shares,
+                            "industry": industry,
+                            "sector": "",  # Not provided by this source
+                            "market_cap": None,
+                            "price": None,
+                        })
+
+                    except Exception as e:
+                        logger.debug(f"Error parsing row: {e}")
+                        continue
+
+            df = pd.DataFrame(all_stocks)
+            logger.info(f"highshortinterest.com found {len(df)} stocks")
+            return df
+
+        except requests.RequestException as e:
+            logger.warning(f"Failed to fetch highshortinterest.com: {e}")
+            return pd.DataFrame()
+        except Exception as e:
+            logger.error(f"Error scraping highshortinterest.com: {e}")
+            return pd.DataFrame()
+
+    @staticmethod
+    def _parse_percentage(value: str) -> Optional[float]:
+        """Parse percentage string to float."""
+        if not value or value == "-" or value == "N/A":
+            return None
+        try:
+            return float(value.replace("%", "").replace(",", "").strip())
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _parse_shares(value: str) -> Optional[float]:
+        """Parse shares count with M/B suffix."""
+        if not value or value == "-" or value == "N/A":
+            return None
+        value = value.upper().replace(",", "").strip()
+        try:
+            if value.endswith("M"):
+                return float(value[:-1]) * 1e6
+            elif value.endswith("B"):
+                return float(value[:-1]) * 1e9
+            elif value.endswith("K"):
+                return float(value[:-1]) * 1e3
+            return float(value)
+        except ValueError:
+            return None
+
+
+class FintelScraper:
+    """
+    Scraper for Fintel.io Short Squeeze Leaderboard.
+
+    Fintel provides a proprietary Short Squeeze Score based on:
+    - Short Interest % Float
+    - Short Borrow Fee Rates
+    - Float utilization
+    - Other factors
+
+    Note: Full access requires subscription, but basic data may be available.
+    """
+
+    BASE_URL = "https://fintel.io/shortSqueeze"
+    HEADERS = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                      "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.5",
+        "Connection": "keep-alive",
+        "Referer": "https://fintel.io/",
+    }
+
+    def __init__(self, config: ScreeningConfig):
+        self.config = config
+
+    def get_short_squeeze_candidates(self) -> pd.DataFrame:
+        """
+        Scrape Fintel Short Squeeze Leaderboard.
+
+        Returns:
+            DataFrame with columns: ticker, company, squeeze_score, short_float_pct, etc.
+        """
+        logger.info("Scraping Fintel Short Squeeze Leaderboard...")
+
+        all_stocks = []
+
+        try:
+            response = requests.get(self.BASE_URL, headers=self.HEADERS, timeout=30)
+
+            if response.status_code == 403:
+                logger.warning("Fintel access denied (may require subscription)")
+                return pd.DataFrame()
+
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, "lxml")
+
+            # Find the leaderboard table
+            table = soup.find("table", {"class": ["table", "leaderboard"]})
+            if not table:
+                # Try alternative selectors
+                table = soup.find("table")
+
+            if not table:
+                logger.warning("Could not find Fintel leaderboard table")
+                return pd.DataFrame()
+
+            rows = table.find_all("tr")
+
+            for row in rows[1:]:  # Skip header row
+                cols = row.find_all("td")
+                if len(cols) < 3:
+                    continue
+
+                try:
+                    # Find ticker - usually in a link
+                    ticker_elem = row.find("a", href=lambda x: x and "/ss/us/" in x)
+                    if not ticker_elem:
+                        # Try finding by text pattern
+                        for col in cols:
+                            text = col.text.strip().upper()
+                            if text and text.isalpha() and 1 <= len(text) <= 5:
+                                ticker = text
+                                break
+                        else:
+                            continue
+                    else:
+                        ticker = ticker_elem.text.strip().upper()
+
+                    if not ticker:
+                        continue
+
+                    # Parse other columns
+                    col_texts = [c.text.strip() for c in cols]
+
+                    squeeze_score = None
+                    short_float_pct = None
+                    company = ""
+
+                    for i, text in enumerate(col_texts):
+                        # Squeeze score (0-100)
+                        if squeeze_score is None:
+                            try:
+                                val = float(text)
+                                if 0 <= val <= 100:
+                                    squeeze_score = val
+                                    continue
+                            except ValueError:
+                                pass
+
+                        # Short interest percentage
+                        if "%" in text and short_float_pct is None:
+                            try:
+                                short_float_pct = float(text.replace("%", "").strip())
+                            except ValueError:
+                                pass
+
+                        # Company name (longer text without numbers)
+                        if len(text) > 10 and not any(c.isdigit() for c in text[:5]):
+                            company = text
+
+                    all_stocks.append({
+                        "ticker": ticker,
+                        "company": company,
+                        "squeeze_score": squeeze_score,
+                        "short_float_pct": short_float_pct or 20.0,  # Default if not found
+                        "sector": "",
+                        "industry": "",
+                        "market_cap": None,
+                        "price": None,
+                    })
+
+                except Exception as e:
+                    logger.debug(f"Error parsing Fintel row: {e}")
+                    continue
+
+            df = pd.DataFrame(all_stocks)
+
+            # Sort by squeeze score if available
+            if not df.empty and "squeeze_score" in df.columns:
+                df = df.sort_values("squeeze_score", ascending=False)
+
+            logger.info(f"Fintel found {len(df)} short squeeze candidates")
+            return df
+
+        except requests.RequestException as e:
+            logger.warning(f"Failed to fetch Fintel: {e}")
+            return pd.DataFrame()
+        except Exception as e:
+            logger.error(f"Error scraping Fintel: {e}")
+            return pd.DataFrame()
+
+
 class YahooFinanceData:
     """Yahoo Finance data fetcher for short interest verification."""
 
@@ -763,45 +1033,12 @@ class AlpacaDataClient:
 class DataManager:
     """Unified data manager combining all data sources."""
 
-    # Extended ticker list for dynamic screening
-    # This is checked via Yahoo Finance to find current high short interest stocks
-    # Much larger than before to increase chances of finding new squeeze candidates
-    SCREENING_UNIVERSE = [
-        # Current high short interest (20%+) - December 2025
-        "HIMS", "APLD", "SOUN", "MP", "UPST", "CVNA", "BYND",
-        "ZETA", "CPNG", "XPEV", "TMC", "AAOI", "RGTI", "ONDS",
-        # EV/Clean energy - frequently shorted sector
-        "PLUG", "FCEL", "BLNK", "QS", "LAZR", "NKLA", "GOEV", "HYLN",
-        "CHPT", "LCID", "RIVN", "PTRA", "FSR", "WKHS", "RIDE",
-        # Meme stocks / retail favorites
-        "GME", "AMC", "KOSS", "SNDL", "BB", "NOK", "SPCE", "BBAI",
-        # Tech/Growth - volatile, often shorted
-        "PLTR", "FUBO", "CLOV", "ATER", "OPEN", "SOFI", "HOOD",
-        "AFRM", "COIN", "MARA", "RIOT", "CLSK", "BTBT", "HUT",
-        # Biotech/Healthcare - high volatility
-        "VIR", "SRNE", "NVAX", "MRNA", "BNTX", "INO", "OCGN",
-        # SPACs and recent IPOs - often heavily shorted
-        "BKKT", "EVTL", "DNA", "IONQ", "JOBY", "LILM", "ACHR",
-        # Consumer/Retail - cyclical shorts
-        "APRN", "W", "CHWY", "PRPL", "BGFV", "EXPR", "BBWI",
-        # Additional frequently shorted names
-        "TSLA", "NFLX", "SQ", "SNAP", "PINS", "ROKU", "ZM",
-        "DOCU", "PTON", "DASH", "U", "RBLX", "PATH", "CRWD",
-        # Small caps with high short interest potential
-        "FFIE", "MULN", "NKLA", "BNGO", "SENS", "GEVO", "CLNE",
-        "RMO", "GOEV", "ARVL", "REE", "PSNY", "VFS", "PTRA",
-    ]
-
-    # Last resort fallback - verified high SI stocks (subset of above)
-    FALLBACK_TICKERS = [
-        "HIMS", "APLD", "SOUN", "MP", "UPST", "CVNA", "BYND",
-        "PLUG", "FCEL", "GME", "AMC", "PLTR", "FUBO", "MARA", "RIOT",
-    ]
-
     def __init__(self, config: Config):
         self.config = config
         self.finviz_package = FinvizFinanceScreener(config.screening) if FINVIZFINANCE_AVAILABLE else None
         self.finviz_manual = FinvizScraper(config.screening)
+        self.highshortinterest = HighShortInterestScraper(config.screening)
+        self.fintel = FintelScraper(config.screening)
         self.yahoo = YahooFinanceData()
         self.alpaca = AlpacaDataClient(config)
 
@@ -809,59 +1046,99 @@ class DataManager:
         """
         Get screened squeeze candidates using multiple data sources.
 
-        Fallback chain:
+        Dynamic discovery from scrapers (no hardcoded tickers):
         1. finvizfinance package (most reliable Finviz access)
         2. Manual Finviz scraper (custom BeautifulSoup)
-        3. Yahoo Finance dynamic screening (checks SCREENING_UNIVERSE)
-        4. Yahoo Finance fallback list (checks FALLBACK_TICKERS)
+        3. HighShortInterest.com scraper
+        4. Fintel Short Squeeze Leaderboard
+
+        All results are merged and deduplicated to maximize coverage.
+        If all scrapers fail, returns empty DataFrame (no false positives).
 
         Returns:
             DataFrame of stocks meeting all screening criteria
         """
-        df = pd.DataFrame()
+        all_candidates = []
+        sources_tried = 0
+        sources_succeeded = 0
 
-        # SOURCE 1: Try finvizfinance package first (most reliable)
+        # SOURCE 1: Try finvizfinance package (most reliable)
         if self.finviz_package is not None:
-            logger.info("Attempting finvizfinance package...")
-            df = self.finviz_package.get_high_short_interest_stocks()
-            if not df.empty:
-                logger.info(f"finvizfinance found {len(df)} candidates")
+            sources_tried += 1
+            logger.info("Fetching from finvizfinance package...")
+            try:
+                df = self.finviz_package.get_high_short_interest_stocks()
+                if not df.empty:
+                    logger.info(f"finvizfinance found {len(df)} candidates")
+                    all_candidates.append(df)
+                    sources_succeeded += 1
+            except Exception as e:
+                logger.warning(f"finvizfinance error: {e}")
 
-        # SOURCE 2: Fall back to manual Finviz scraper
-        if df.empty:
-            logger.info("Attempting manual Finviz scraper...")
+        # SOURCE 2: Try manual Finviz scraper
+        sources_tried += 1
+        logger.info("Fetching from manual Finviz scraper...")
+        try:
             df = self.finviz_manual.get_high_short_interest_stocks()
             if not df.empty:
-                logger.info(f"Manual scraper found {len(df)} candidates")
+                logger.info(f"Manual Finviz scraper found {len(df)} candidates")
+                all_candidates.append(df)
+                sources_succeeded += 1
+        except Exception as e:
+            logger.warning(f"Manual Finviz error: {e}")
 
-        # SOURCE 3: Fall back to Yahoo dynamic screening (large universe)
-        if df.empty:
-            logger.warning("Finviz sources failed, using Yahoo dynamic screening...")
-            df = self.yahoo.screen_high_short_interest(
-                seed_tickers=self.SCREENING_UNIVERSE,
-                min_short_pct=self.config.screening.min_short_float_pct,
-                min_price=self.config.screening.min_price,
-                min_market_cap=self.config.screening.min_market_cap,
+        # SOURCE 3: Try HighShortInterest.com
+        sources_tried += 1
+        logger.info("Fetching from highshortinterest.com...")
+        try:
+            df = self.highshortinterest.get_high_short_interest_stocks()
+            if not df.empty:
+                logger.info(f"highshortinterest.com found {len(df)} candidates")
+                all_candidates.append(df)
+                sources_succeeded += 1
+        except Exception as e:
+            logger.warning(f"highshortinterest.com error: {e}")
+
+        # SOURCE 4: Try Fintel Short Squeeze Leaderboard
+        sources_tried += 1
+        logger.info("Fetching from Fintel Short Squeeze Leaderboard...")
+        try:
+            df = self.fintel.get_short_squeeze_candidates()
+            if not df.empty:
+                logger.info(f"Fintel found {len(df)} candidates")
+                all_candidates.append(df)
+                sources_succeeded += 1
+        except Exception as e:
+            logger.warning(f"Fintel error: {e}")
+
+        # Check if all scrapers failed
+        if not all_candidates:
+            logger.error(
+                f"All {sources_tried} data sources failed to return candidates. "
+                "Check network connectivity and scraper configurations."
             )
-            if not df.empty:
-                logger.info(f"Yahoo screening found {len(df)} candidates from {len(self.SCREENING_UNIVERSE)} checked")
-                return df  # Already verified
+            return pd.DataFrame()
 
-        # SOURCE 4: Last resort - check verified fallback tickers
-        if df.empty:
-            logger.warning("All sources failed, using fallback ticker list...")
-            df = self._get_candidates_from_yahoo()
-            if not df.empty:
-                return df  # Already verified
+        # Combine all dataframes
+        combined = pd.concat(all_candidates, ignore_index=True)
 
-        if df.empty:
-            logger.error("No candidates found from ANY source")
-            return df
+        # Deduplicate by ticker, keeping first occurrence (usually has better data)
+        combined = combined.drop_duplicates(subset=["ticker"], keep="first")
 
-        # Verify Finviz candidates with Yahoo data
-        verified = self._verify_with_yahoo(df)
+        logger.info(
+            f"Combined {len(combined)} unique candidates from "
+            f"{sources_succeeded}/{sources_tried} sources"
+        )
+
+        # Verify and enrich with Yahoo data
+        verified = self._verify_with_yahoo(combined)
         result = pd.DataFrame(verified)
-        logger.info(f"Verified {len(result)} squeeze candidates")
+
+        # Sort by short interest (highest first)
+        if not result.empty and "short_float_pct" in result.columns:
+            result = result.sort_values("short_float_pct", ascending=False)
+
+        logger.info(f"Final watchlist: {len(result)} verified squeeze candidates")
         return result
 
     def _verify_with_yahoo(self, df: pd.DataFrame) -> list:
@@ -913,58 +1190,3 @@ class DataManager:
         if skipped > 0:
             logger.info(f"Skipped {skipped} stocks due to missing price data")
         return verified
-
-    def _get_candidates_from_yahoo(self) -> pd.DataFrame:
-        """
-        Fallback: Get candidates directly from Yahoo Finance.
-
-        Checks a list of known high short interest stocks.
-        """
-        logger.info("Checking known high short interest stocks via Yahoo Finance...")
-
-        candidates = []
-        for ticker in self.FALLBACK_TICKERS:
-            try:
-                info = self.yahoo.get_stock_info(ticker)
-
-                short_pct = info.get("short_percent_of_float")
-                price = info.get("price")
-                market_cap = info.get("market_cap")
-                avg_volume = info.get("avg_volume")
-
-                # Apply filters with logging
-                if short_pct is None or short_pct < self.config.screening.min_short_float_pct:
-                    if short_pct is not None:
-                        logger.debug(f"{ticker}: short interest {short_pct:.1f}% < {self.config.screening.min_short_float_pct}% min")
-                    continue
-                if price is None or price < self.config.screening.min_price:
-                    if price is not None:
-                        logger.debug(f"{ticker}: price ${price:.2f} < ${self.config.screening.min_price} min")
-                    continue
-                if market_cap is None or market_cap < self.config.screening.min_market_cap:
-                    if market_cap is not None:
-                        logger.debug(f"{ticker}: market cap ${market_cap/1e6:.0f}M < ${self.config.screening.min_market_cap/1e6:.0f}M min")
-                    continue
-
-                candidates.append({
-                    "ticker": ticker,
-                    "company": info.get("name", ""),
-                    "sector": info.get("sector", ""),
-                    "industry": info.get("industry", ""),
-                    "market_cap": market_cap,
-                    "price": price,
-                    "short_float_pct": short_pct,
-                    "avg_volume": avg_volume,
-                })
-
-                logger.debug(f"{ticker}: {short_pct:.1f}% short interest")
-
-            except Exception as e:
-                logger.debug(f"Error checking {ticker}: {e}")
-                continue
-
-            time.sleep(0.1)  # Rate limiting
-
-        df = pd.DataFrame(candidates)
-        logger.info(f"Found {len(df)} candidates from Yahoo fallback")
-        return df
