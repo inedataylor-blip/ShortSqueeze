@@ -1033,55 +1033,6 @@ class AlpacaDataClient:
 class DataManager:
     """Unified data manager combining all data sources."""
 
-    # Extended ticker list for dynamic screening
-    # This is checked via Yahoo Finance to find current high short interest stocks
-    # Much larger than before to increase chances of finding new squeeze candidates
-    SCREENING_UNIVERSE = [
-        # Current high short interest (20%+) - January 2026
-        "HIMS", "APLD", "SOUN", "MP", "UPST", "CVNA", "BYND",
-        "ZETA", "CPNG", "XPEV", "TMC", "AAOI", "RGTI", "ONDS",
-        # EV/Clean energy - frequently shorted sector
-        "PLUG", "FCEL", "BLNK", "QS", "LAZR", "NKLA", "GOEV", "HYLN",
-        "CHPT", "LCID", "RIVN", "PTRA", "FSR", "WKHS", "RIDE",
-        # Meme stocks / retail favorites
-        "GME", "AMC", "KOSS", "SNDL", "BB", "NOK", "SPCE", "BBAI",
-        # Tech/Growth - volatile, often shorted
-        "PLTR", "FUBO", "CLOV", "ATER", "OPEN", "SOFI", "HOOD",
-        "AFRM", "COIN", "MARA", "RIOT", "CLSK", "BTBT", "HUT",
-        # Biotech/Healthcare - HIGH PRIORITY for squeeze potential
-        "IBRX", "VIR", "SRNE", "NVAX", "MRNA", "BNTX", "INO", "OCGN",
-        "SAVA", "AGEN", "IMVT", "APLS", "FATE", "BEAM", "CRSP", "EDIT",
-        "NTLA", "VERV", "PRAX", "AKRO", "ARWR", "ALNY", "IONS", "REGN",
-        "VRTX", "BMRN", "EXEL", "HALO", "LGND", "RARE", "RCKT", "RLAY",
-        "SGEN", "TVTX", "XNCR", "ZLAB", "DCPH", "PTGX", "KYMR", "GTHX",
-        "ORIC", "TGTX", "ACAD", "ALKS", "FOLD", "GILD", "INCY", "JAZZ",
-        # SPACs and recent IPOs - often heavily shorted
-        "BKKT", "EVTL", "DNA", "IONQ", "JOBY", "LILM", "ACHR",
-        # Consumer/Retail - cyclical shorts
-        "APRN", "W", "CHWY", "PRPL", "BGFV", "EXPR", "BBWI",
-        # Additional frequently shorted names
-        "TSLA", "NFLX", "SQ", "SNAP", "PINS", "ROKU", "ZM",
-        "DOCU", "PTON", "DASH", "U", "RBLX", "PATH", "CRWD",
-        # Small caps with high short interest potential
-        "FFIE", "MULN", "BNGO", "SENS", "GEVO", "CLNE",
-        "RMO", "ARVL", "REE", "PSNY", "VFS",
-        # Solar/Energy - cyclical shorts
-        "SEDG", "ENPH", "RUN", "NOVA", "ARRY", "MAXN", "JKS", "CSIQ",
-        # Semiconductor/Tech hardware
-        "WOLF", "AEHR", "LSCC", "SITM", "PLAB", "AOSL", "CRUS",
-        # Airlines/Travel - high short interest
-        "SAVE", "JBLU", "AAL", "UAL", "DAL", "LUV", "ALK", "ULCC",
-        # Additional healthcare/pharma
-        "TEVA", "ENDP", "PRGO", "CTLT", "ZTS", "VTRS", "OGN",
-    ]
-
-    # Last resort fallback - verified high SI stocks (subset of above)
-    FALLBACK_TICKERS = [
-        "HIMS", "APLD", "SOUN", "MP", "UPST", "CVNA", "BYND",
-        "PLUG", "FCEL", "GME", "AMC", "PLTR", "FUBO", "MARA", "RIOT",
-        "IBRX", "NVAX", "IONQ", "SEDG", "WOLF", "SAVE",
-    ]
-
     def __init__(self, config: Config):
         self.config = config
         self.finviz_package = FinvizFinanceScreener(config.screening) if FINVIZFINANCE_AVAILABLE else None
@@ -1095,84 +1046,77 @@ class DataManager:
         """
         Get screened squeeze candidates using multiple data sources.
 
-        Multi-source aggregation (collects from ALL available sources):
+        Dynamic discovery from scrapers (no hardcoded tickers):
         1. finvizfinance package (most reliable Finviz access)
         2. Manual Finviz scraper (custom BeautifulSoup)
         3. HighShortInterest.com scraper
         4. Fintel Short Squeeze Leaderboard
-        5. Yahoo Finance dynamic screening (checks SCREENING_UNIVERSE)
 
         All results are merged and deduplicated to maximize coverage.
+        If all scrapers fail, returns empty DataFrame (no false positives).
 
         Returns:
             DataFrame of stocks meeting all screening criteria
         """
         all_candidates = []
+        sources_tried = 0
+        sources_succeeded = 0
 
         # SOURCE 1: Try finvizfinance package (most reliable)
         if self.finviz_package is not None:
+            sources_tried += 1
             logger.info("Fetching from finvizfinance package...")
             try:
                 df = self.finviz_package.get_high_short_interest_stocks()
                 if not df.empty:
                     logger.info(f"finvizfinance found {len(df)} candidates")
                     all_candidates.append(df)
+                    sources_succeeded += 1
             except Exception as e:
                 logger.warning(f"finvizfinance error: {e}")
 
         # SOURCE 2: Try manual Finviz scraper
+        sources_tried += 1
         logger.info("Fetching from manual Finviz scraper...")
         try:
             df = self.finviz_manual.get_high_short_interest_stocks()
             if not df.empty:
                 logger.info(f"Manual Finviz scraper found {len(df)} candidates")
                 all_candidates.append(df)
+                sources_succeeded += 1
         except Exception as e:
             logger.warning(f"Manual Finviz error: {e}")
 
         # SOURCE 3: Try HighShortInterest.com
+        sources_tried += 1
         logger.info("Fetching from highshortinterest.com...")
         try:
             df = self.highshortinterest.get_high_short_interest_stocks()
             if not df.empty:
                 logger.info(f"highshortinterest.com found {len(df)} candidates")
                 all_candidates.append(df)
+                sources_succeeded += 1
         except Exception as e:
             logger.warning(f"highshortinterest.com error: {e}")
 
         # SOURCE 4: Try Fintel Short Squeeze Leaderboard
+        sources_tried += 1
         logger.info("Fetching from Fintel Short Squeeze Leaderboard...")
         try:
             df = self.fintel.get_short_squeeze_candidates()
             if not df.empty:
                 logger.info(f"Fintel found {len(df)} candidates")
                 all_candidates.append(df)
+                sources_succeeded += 1
         except Exception as e:
             logger.warning(f"Fintel error: {e}")
 
-        # SOURCE 5: Yahoo Finance dynamic screening (always run to catch SCREENING_UNIVERSE)
-        logger.info(f"Screening {len(self.SCREENING_UNIVERSE)} tickers via Yahoo Finance...")
-        try:
-            df = self.yahoo.screen_high_short_interest(
-                seed_tickers=self.SCREENING_UNIVERSE,
-                min_short_pct=self.config.screening.min_short_float_pct,
-                min_price=self.config.screening.min_price,
-                min_market_cap=self.config.screening.min_market_cap,
-            )
-            if not df.empty:
-                logger.info(f"Yahoo screening found {len(df)} candidates")
-                all_candidates.append(df)
-        except Exception as e:
-            logger.warning(f"Yahoo screening error: {e}")
-
-        # Merge all candidates
+        # Check if all scrapers failed
         if not all_candidates:
-            # Last resort - check verified fallback tickers
-            logger.warning("All sources failed, using fallback ticker list...")
-            df = self._get_candidates_from_yahoo()
-            if not df.empty:
-                return df
-            logger.error("No candidates found from ANY source")
+            logger.error(
+                f"All {sources_tried} data sources failed to return candidates. "
+                "Check network connectivity and scraper configurations."
+            )
             return pd.DataFrame()
 
         # Combine all dataframes
@@ -1181,7 +1125,10 @@ class DataManager:
         # Deduplicate by ticker, keeping first occurrence (usually has better data)
         combined = combined.drop_duplicates(subset=["ticker"], keep="first")
 
-        logger.info(f"Combined {len(combined)} unique candidates from {len(all_candidates)} sources")
+        logger.info(
+            f"Combined {len(combined)} unique candidates from "
+            f"{sources_succeeded}/{sources_tried} sources"
+        )
 
         # Verify and enrich with Yahoo data
         verified = self._verify_with_yahoo(combined)
@@ -1243,58 +1190,3 @@ class DataManager:
         if skipped > 0:
             logger.info(f"Skipped {skipped} stocks due to missing price data")
         return verified
-
-    def _get_candidates_from_yahoo(self) -> pd.DataFrame:
-        """
-        Fallback: Get candidates directly from Yahoo Finance.
-
-        Checks a list of known high short interest stocks.
-        """
-        logger.info("Checking known high short interest stocks via Yahoo Finance...")
-
-        candidates = []
-        for ticker in self.FALLBACK_TICKERS:
-            try:
-                info = self.yahoo.get_stock_info(ticker)
-
-                short_pct = info.get("short_percent_of_float")
-                price = info.get("price")
-                market_cap = info.get("market_cap")
-                avg_volume = info.get("avg_volume")
-
-                # Apply filters with logging
-                if short_pct is None or short_pct < self.config.screening.min_short_float_pct:
-                    if short_pct is not None:
-                        logger.debug(f"{ticker}: short interest {short_pct:.1f}% < {self.config.screening.min_short_float_pct}% min")
-                    continue
-                if price is None or price < self.config.screening.min_price:
-                    if price is not None:
-                        logger.debug(f"{ticker}: price ${price:.2f} < ${self.config.screening.min_price} min")
-                    continue
-                if market_cap is None or market_cap < self.config.screening.min_market_cap:
-                    if market_cap is not None:
-                        logger.debug(f"{ticker}: market cap ${market_cap/1e6:.0f}M < ${self.config.screening.min_market_cap/1e6:.0f}M min")
-                    continue
-
-                candidates.append({
-                    "ticker": ticker,
-                    "company": info.get("name", ""),
-                    "sector": info.get("sector", ""),
-                    "industry": info.get("industry", ""),
-                    "market_cap": market_cap,
-                    "price": price,
-                    "short_float_pct": short_pct,
-                    "avg_volume": avg_volume,
-                })
-
-                logger.debug(f"{ticker}: {short_pct:.1f}% short interest")
-
-            except Exception as e:
-                logger.debug(f"Error checking {ticker}: {e}")
-                continue
-
-            time.sleep(0.1)  # Rate limiting
-
-        df = pd.DataFrame(candidates)
-        logger.info(f"Found {len(df)} candidates from Yahoo fallback")
-        return df
