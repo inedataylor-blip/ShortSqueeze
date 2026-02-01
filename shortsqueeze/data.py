@@ -6,11 +6,14 @@ Handles data retrieval from:
 - Yahoo Finance: Short interest verification, fundamentals, and dynamic screening
 - HighShortInterest.com: Supplementary short interest data
 - Fintel: Short Squeeze Leaderboard
+- SEC EDGAR: Fail-to-Deliver data (high FTDs = hard to borrow = squeeze pressure)
 
 Broker-specific market data is handled by the broker/ package.
 """
 
+import io
 import time
+import zipfile
 from datetime import datetime, timedelta
 from typing import Optional, List
 
@@ -661,6 +664,207 @@ class FintelScraper:
             return pd.DataFrame()
 
 
+class SECFailToDeliverScraper:
+    """
+    Fetches Fail-to-Deliver (FTD) data from SEC EDGAR.
+
+    High FTD counts indicate shares are hard to borrow, which creates
+    additional squeeze pressure. Stocks with persistently high FTDs
+    relative to their float are strong squeeze candidates.
+
+    Data source: https://www.sec.gov/data-research/sec-markets-data/fails-deliver-data
+    Updated twice monthly (1st half ~end of month, 2nd half ~15th of next month).
+    """
+
+    BASE_URL = "https://www.sec.gov/files/data/fails-deliver-data"
+    HEADERS = {
+        "User-Agent": "ShortSqueezeBot/1.0 (research@example.com)",
+        "Accept": "application/zip, */*",
+        "Accept-Encoding": "gzip, deflate",
+    }
+
+    # Minimum FTD shares to consider significant
+    MIN_FTD_SHARES = 50_000
+
+    def __init__(self, config: ScreeningConfig):
+        self.config = config
+
+    def get_high_ftd_stocks(self) -> pd.DataFrame:
+        """
+        Fetch recent FTD data from SEC and identify stocks with high fail-to-deliver counts.
+
+        Downloads the most recent available FTD file, aggregates by ticker,
+        and returns stocks with significant FTD levels.
+
+        Returns:
+            DataFrame with columns: ticker, company, total_ftd_shares, avg_ftd_shares,
+            max_ftd_shares, ftd_days, latest_price, short_float_pct (None)
+        """
+        logger.info("Fetching SEC Fail-to-Deliver data...")
+
+        raw_df = self._download_latest_ftd()
+
+        if raw_df.empty:
+            return pd.DataFrame()
+
+        # Aggregate FTD data by ticker
+        aggregated = self._aggregate_ftd(raw_df)
+
+        if aggregated.empty:
+            return pd.DataFrame()
+
+        logger.info(f"SEC FTD data: {len(aggregated)} stocks with significant fail-to-deliver counts")
+        return aggregated
+
+    def _download_latest_ftd(self) -> pd.DataFrame:
+        """
+        Download the most recent FTD data file from SEC.
+
+        Tries the most recent half-month periods, falling back to older ones.
+
+        Returns:
+            Raw DataFrame of FTD records
+        """
+        now = datetime.now()
+
+        # Build list of candidate file names to try (most recent first)
+        candidates = []
+        for months_back in range(0, 4):
+            dt = now - timedelta(days=months_back * 30)
+            year = dt.year
+            month = dt.month
+            candidates.append(f"cnsfails{year}{month:02d}b")
+            candidates.append(f"cnsfails{year}{month:02d}a")
+
+        for filename in candidates:
+            url = f"{self.BASE_URL}/{filename}.zip"
+            try:
+                logger.debug(f"Trying SEC FTD file: {filename}.zip")
+                response = requests.get(url, headers=self.HEADERS, timeout=30)
+
+                if response.status_code == 200:
+                    logger.info(f"Downloaded SEC FTD file: {filename}.zip")
+                    return self._parse_ftd_zip(response.content, filename)
+                elif response.status_code == 404:
+                    continue
+                else:
+                    logger.debug(f"SEC FTD {filename}: HTTP {response.status_code}")
+
+            except requests.RequestException as e:
+                logger.debug(f"Failed to download {filename}: {e}")
+                continue
+
+        logger.warning("Could not download any SEC FTD data files")
+        return pd.DataFrame()
+
+    def _parse_ftd_zip(self, zip_content: bytes, filename: str) -> pd.DataFrame:
+        """
+        Parse a downloaded FTD ZIP file.
+
+        The ZIP contains a pipe-delimited text file with columns:
+        SETTLEMENT DATE|CUSIP|SYMBOL|QUANTITY (FAILS)|DESCRIPTION|PRICE
+        """
+        try:
+            with zipfile.ZipFile(io.BytesIO(zip_content)) as zf:
+                # Get the first (usually only) file in the ZIP
+                file_list = zf.namelist()
+                if not file_list:
+                    logger.warning(f"Empty ZIP file: {filename}")
+                    return pd.DataFrame()
+
+                txt_filename = file_list[0]
+                with zf.open(txt_filename) as f:
+                    content = f.read().decode("utf-8", errors="ignore")
+
+            # Parse pipe-delimited content
+            lines = content.strip().split("\n")
+            if len(lines) < 2:
+                return pd.DataFrame()
+
+            records = []
+            for line in lines[1:]:  # Skip header
+                parts = line.strip().split("|")
+                if len(parts) < 6:
+                    continue
+
+                try:
+                    settlement_date = parts[0].strip()
+                    symbol = parts[2].strip().upper()
+                    quantity = parts[3].strip()
+                    description = parts[4].strip()
+                    price = parts[5].strip()
+
+                    # Validate symbol
+                    if not symbol or not symbol.isalpha() or len(symbol) > 5:
+                        continue
+
+                    # Parse quantity
+                    ftd_shares = int(quantity) if quantity else 0
+                    if ftd_shares < self.MIN_FTD_SHARES:
+                        continue
+
+                    # Parse price
+                    try:
+                        price_val = float(price) if price else None
+                    except ValueError:
+                        price_val = None
+
+                    records.append({
+                        "date": settlement_date,
+                        "ticker": symbol,
+                        "ftd_shares": ftd_shares,
+                        "company": description,
+                        "price": price_val,
+                    })
+
+                except (ValueError, IndexError):
+                    continue
+
+            df = pd.DataFrame(records)
+            logger.info(f"Parsed {len(df)} FTD records from {txt_filename}")
+            return df
+
+        except zipfile.BadZipFile:
+            logger.warning(f"Bad ZIP file: {filename}")
+            return pd.DataFrame()
+        except Exception as e:
+            logger.error(f"Error parsing FTD file {filename}: {e}")
+            return pd.DataFrame()
+
+    def _aggregate_ftd(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Aggregate raw FTD records by ticker.
+
+        Computes total, average, and max FTD shares, plus the number of days
+        with FTDs. Stocks with more days of high FTDs are stronger candidates.
+        """
+        if df.empty or "ticker" not in df.columns:
+            return pd.DataFrame()
+
+        agg = df.groupby("ticker").agg(
+            total_ftd_shares=("ftd_shares", "sum"),
+            avg_ftd_shares=("ftd_shares", "mean"),
+            max_ftd_shares=("ftd_shares", "max"),
+            ftd_days=("ftd_shares", "count"),
+            company=("company", "first"),
+            price=("price", "last"),
+        ).reset_index()
+
+        # Filter: at least 3 days of significant FTDs
+        agg = agg[agg["ftd_days"] >= 3]
+
+        # Sort by total FTD shares (highest first)
+        agg = agg.sort_values("total_ftd_shares", ascending=False)
+
+        # Add placeholder columns for compatibility with other sources
+        agg["short_float_pct"] = None
+        agg["sector"] = ""
+        agg["industry"] = ""
+        agg["market_cap"] = None
+
+        return agg
+
+
 class YahooFinanceData:
     """Yahoo Finance data fetcher for short interest verification."""
 
@@ -824,6 +1028,7 @@ class DataManager:
         self.finviz_manual = FinvizScraper(config.screening)
         self.highshortinterest = HighShortInterestScraper(config.screening)
         self.fintel = FintelScraper(config.screening)
+        self.sec_ftd = SECFailToDeliverScraper(config.screening)
         self.yahoo = YahooFinanceData()
 
     def get_squeeze_candidates(self) -> pd.DataFrame:
@@ -835,6 +1040,7 @@ class DataManager:
         2. Manual Finviz scraper (custom BeautifulSoup)
         3. HighShortInterest.com scraper
         4. Fintel Short Squeeze Leaderboard
+        5. SEC EDGAR Fail-to-Deliver data (high FTDs = squeeze pressure)
 
         All results are merged and deduplicated to maximize coverage.
         If all scrapers fail, returns empty DataFrame (no false positives).
@@ -894,6 +1100,18 @@ class DataManager:
                 sources_succeeded += 1
         except Exception as e:
             logger.warning(f"Fintel error: {e}")
+
+        # SOURCE 5: SEC EDGAR Fail-to-Deliver data
+        sources_tried += 1
+        logger.info("Fetching SEC Fail-to-Deliver data...")
+        try:
+            df = self.sec_ftd.get_high_ftd_stocks()
+            if not df.empty:
+                logger.info(f"SEC FTD data found {len(df)} stocks with high fail-to-deliver counts")
+                all_candidates.append(df)
+                sources_succeeded += 1
+        except Exception as e:
+            logger.warning(f"SEC FTD error: {e}")
 
         # Check if all scrapers failed
         if not all_candidates:
