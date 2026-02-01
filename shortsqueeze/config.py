@@ -97,6 +97,9 @@ class Config:
     risk: RiskConfig = field(default_factory=RiskConfig)
     trading: TradingConfig = field(default_factory=TradingConfig)
 
+    # Broker selection (currently: "alpaca")
+    broker_type: str = "alpaca"
+
     # Paths
     data_dir: Path = field(default_factory=lambda: Path("data"))
     log_level: str = "INFO"
@@ -115,6 +118,7 @@ class Config:
 
         config = cls(
             alpaca=AlpacaConfig.from_env(),
+            broker_type=os.getenv("BROKER_TYPE", "alpaca").lower(),
             log_level=os.getenv("LOG_LEVEL", "INFO"),
         )
 

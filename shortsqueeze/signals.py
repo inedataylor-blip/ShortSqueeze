@@ -13,8 +13,9 @@ from typing import Optional
 import pandas as pd
 from loguru import logger
 
+from .broker import BrokerDataClient, create_data_client
 from .config import Config
-from .data import AlpacaDataClient, YahooFinanceData
+from .data import YahooFinanceData
 from .indicators import TechnicalAnalyzer, SqueezeState
 from .timezone import is_market_hours, get_minutes_since_open, now_eastern
 from .universe import WatchlistManager
@@ -80,9 +81,9 @@ class ScanResult:
 class SignalDetector:
     """Detects entry signals for short squeeze trades."""
 
-    def __init__(self, config: Config):
+    def __init__(self, config: Config, broker_data: Optional[BrokerDataClient] = None):
         self.config = config
-        self.alpaca = AlpacaDataClient(config)
+        self.broker_data = broker_data or create_data_client(config)
         self.yahoo = YahooFinanceData()
         self.analyzer = TechnicalAnalyzer(config.indicators)
         self.watchlist_manager = WatchlistManager(config)
@@ -113,12 +114,12 @@ class SignalDetector:
 
             # Try to get current price from Alpaca quote first
             current_price = 0
-            quote = self.alpaca.get_latest_quote(ticker)
+            quote = self.broker_data.get_latest_quote(ticker)
             if quote:
                 current_price = (quote.get("bid", 0) + quote.get("ask", 0)) / 2
 
             # Get daily bars - try Alpaca first, then Yahoo fallback
-            daily_bars = self.alpaca.get_daily_bars(ticker, days=30)
+            daily_bars = self.broker_data.get_daily_bars(ticker, days=30)
 
             if daily_bars.empty or len(daily_bars) < 15:
                 logger.debug(f"{ticker}: Alpaca returned insufficient data, trying Yahoo...")
@@ -166,7 +167,7 @@ class SignalDetector:
             logger.debug(f"{ticker}: price=${current_price:.2f}, prev_close=${previous_close:.2f} (source: {previous_close_source})")
 
             # Get intraday bars for VWAP (try Alpaca, but don't fail if not available)
-            intraday = self.alpaca.get_intraday_bars(ticker, minutes=5, days_back=1)
+            intraday = self.broker_data.get_intraday_bars(ticker, minutes=5, days_back=1)
 
             # Calculate current day's volume
             today = now_eastern().date()
@@ -345,7 +346,7 @@ class SignalDetector:
 
         Useful for real-time monitoring of specific stocks.
         """
-        quote = self.alpaca.get_latest_quote(ticker)
+        quote = self.broker_data.get_latest_quote(ticker)
         if not quote:
             return {"ticker": ticker, "status": "no_data"}
 

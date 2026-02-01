@@ -1,22 +1,27 @@
 # Short Squeeze Trading Bot
 
-A fully automated trading bot that scans for heavily shorted stocks, detects squeeze momentum in progress, and executes trades via Alpaca's API. Uses free data sources only.
+A fully automated trading bot that scans for heavily shorted stocks, detects squeeze momentum in progress, and executes trades via Alpaca's API. Uses free data sources only with multi-source dynamic discovery.
 
 ## Features
 
-- **Universe Generation**: Weekly scan of Finviz for high short interest stocks (>20% of float)
-- **Real-time Signal Detection**: Intraday scanning every 5-15 minutes during market hours
+- **Multi-Source Discovery**: Daily scan across Finviz, HighShortInterest.com, and Fintel for high short interest stocks (>20% of float)
+- **Dual Watchlists**: Separate quality ($5+) and speculative ($1-$5) watchlists for comprehensive coverage
+- **Real-time Signal Detection**: Intraday scanning every 15 minutes during market hours
 - **LazyBear Squeeze Momentum**: Implementation of the popular TradingView indicator
 - **Risk Management**: Position sizing based on account risk, stop losses, and take profits
 - **Automated Trading**: Executes trades via Alpaca API (paper or live)
+- **Dynamic Discovery**: No hardcoded ticker lists — all candidates found by scrapers in real-time
 
 ## Data Sources
 
 | Data Type | Source | Update Frequency | Library |
 |-----------|--------|------------------|---------|
-| Short Interest (% of float) | Yahoo Finance | ~2x monthly (lagged) | yfinance |
+| Short Interest Screening | Finviz (finvizfinance) | Daily | finvizfinance |
+| Short Interest Screening | Finviz (manual scraper) | Daily | BeautifulSoup |
+| Short Interest Screening | HighShortInterest.com | Daily | BeautifulSoup |
+| Short Squeeze Scores | Fintel Leaderboard | Daily | BeautifulSoup |
+| Short Interest Verification | Yahoo Finance | ~2x monthly (lagged) | yfinance |
 | Price/Volume Data | Alpaca API | Real-time | alpaca-trade-api |
-| Screening Candidates | Finviz | Daily | BeautifulSoup |
 | Historical OHLCV | Alpaca/Yahoo | Daily/Intraday | alpaca-trade-api/yfinance |
 
 ## Installation
@@ -97,29 +102,38 @@ python main.py --debug
 
 ## Strategy Details
 
-### Universe Generation (Weekly Refresh)
+### Universe Generation (Daily Refresh)
 
-**Goal**: Build a watchlist of squeeze candidates
+**Goal**: Build a comprehensive watchlist of squeeze candidates using multiple data sources
 
-**Criteria**:
+**Discovery Sources** (all queried, results merged and deduplicated):
+1. **Finviz** (finvizfinance package) — Most reliable screener access
+2. **Finviz** (manual scraper) — Backup BeautifulSoup scraper
+3. **HighShortInterest.com** — Curated list of top shorted stocks
+4. **Fintel Short Squeeze Leaderboard** — Proprietary squeeze scoring model
+
+If all scrapers fail, the bot returns an empty watchlist (no false positives from stale data).
+
+**Screening Criteria**:
 - Short % of float > 20%
-- Market cap > $300M (liquidity filter)
-- Average daily volume > 1M shares
-- Price > $5 (avoid penny stocks)
-- US exchange listed (NYSE, NASDAQ)
+- Market cap > $300M for quality stocks (>$100M for speculative)
+- Average daily volume > 500K shares
+- US exchange listed (NYSE, NASDAQ, AMEX)
 
-**Process**:
-1. Scrape Finviz for stocks with short float > 20%
-2. Verify short interest data from Yahoo Finance
-3. Filter by market cap and volume
-4. Store as `data/watchlist.json` — refresh every Sunday
+**Dual Watchlists**:
+| Watchlist | Price Range | Market Cap | File |
+|-----------|-------------|------------|------|
+| Quality | >= $5 | >= $300M | `data/watchlist_quality.json` |
+| Speculative | $1 - $5 | >= $100M | `data/watchlist_speculative.json` |
+
+**Refresh Schedule**: Daily at 6:00 AM ET (before market open)
 
 ### Entry Signal Detection (Intraday Scan)
 
-**Run frequency**: Every 5-15 minutes during market hours
+**Run frequency**: Every 15 minutes during market hours
 
 **Primary Triggers (ALL must be true)**:
-- Stock is on the watchlist (high short interest)
+- Stock is on either watchlist (high short interest)
 - Current price up > 5% from previous close
 - Current volume > 3x 20-day average volume (prorated for time of day)
 - Price > VWAP (holding above volume-weighted average)
@@ -193,16 +207,18 @@ ShortSqueeze/
 ├── shortsqueeze/
 │   ├── __init__.py        # Package init
 │   ├── config.py          # Configuration management
-│   ├── data.py            # Data fetching (Finviz, Yahoo, Alpaca)
+│   ├── data.py            # Data fetching (Finviz, HighShortInterest, Fintel, Yahoo, Alpaca)
 │   ├── indicators.py      # Technical indicators (Squeeze Momentum)
-│   ├── universe.py        # Watchlist management
+│   ├── universe.py        # Dual watchlist management (quality + speculative)
 │   ├── signals.py         # Entry signal detection
 │   ├── position.py        # Position sizing & risk management
 │   ├── trader.py          # Trade execution
+│   ├── timezone.py        # Market hours & timezone utilities
 │   └── bot.py             # Main bot orchestration
 └── data/
-    ├── watchlist.json     # Generated watchlist (auto-created)
-    └── trades.json        # Trade history (auto-created)
+    ├── watchlist_quality.json      # Quality watchlist - $5+ stocks (auto-created)
+    ├── watchlist_speculative.json  # Speculative watchlist - $1-$5 stocks (auto-created)
+    └── trades.json                 # Trade history (auto-created)
 ```
 
 ## Risk Disclaimer
