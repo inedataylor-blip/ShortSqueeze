@@ -16,9 +16,9 @@ from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 from loguru import logger
 
+from .broker import create_data_client, create_trader
 from .config import Config
 from .timezone import EASTERN_TZ, is_market_hours, now_eastern
-from .data import AlpacaDataClient
 from .universe import WatchlistManager
 from .signals import SignalDetector, SignalFilter
 from .position import PositionSizer, RiskManager
@@ -32,14 +32,17 @@ class ShortSqueezeBot:
         """Initialize the bot with configuration."""
         self.config = config or Config.load()
 
-        # Initialize components
-        self.alpaca = AlpacaDataClient(self.config)
+        # Initialize broker components
+        self.broker_data = create_data_client(self.config)
+        self.broker_trader = create_trader(self.config)
+
+        # Initialize strategy components
         self.watchlist = WatchlistManager(self.config)
-        self.signal_detector = SignalDetector(self.config)
+        self.signal_detector = SignalDetector(self.config, broker_data=self.broker_data)
         self.signal_filter = SignalFilter(self.config)
         self.position_sizer = PositionSizer(self.config)
         self.risk_manager = RiskManager(self.config)
-        self.trade_manager = TradeManager(self.config)
+        self.trade_manager = TradeManager(self.config, executor=self.broker_trader)
 
         # Scheduler
         self.scheduler = BackgroundScheduler()
@@ -55,7 +58,7 @@ class ShortSqueezeBot:
             return
 
         # Check account status
-        account = self.alpaca.get_account()
+        account = self.broker_data.get_account()
         if not account:
             logger.error("Failed to connect to Alpaca. Check your API keys.")
             return
@@ -96,9 +99,10 @@ class ShortSqueezeBot:
 
     def _validate_config(self) -> bool:
         """Validate essential configuration."""
-        if not self.config.alpaca.api_key or not self.config.alpaca.secret_key:
-            logger.error("Alpaca API credentials not configured")
-            return False
+        if self.config.broker_type == "alpaca":
+            if not self.config.alpaca.api_key or not self.config.alpaca.secret_key:
+                logger.error("Alpaca API credentials not configured")
+                return False
         return True
 
     def _schedule_jobs(self) -> None:
@@ -145,12 +149,12 @@ class ShortSqueezeBot:
 
         try:
             # Get current account state
-            account = self.alpaca.get_account()
+            account = self.broker_data.get_account()
             if not account:
                 logger.error("Failed to get account info")
                 return
 
-            positions = self.alpaca.get_positions()
+            positions = self.broker_data.get_positions()
             current_position_count = len(positions)
 
             # Check if we can take more positions
@@ -244,7 +248,7 @@ class ShortSqueezeBot:
             return
 
         try:
-            positions = self.alpaca.get_positions()
+            positions = self.broker_data.get_positions()
 
             if not positions:
                 return
@@ -310,7 +314,7 @@ class ShortSqueezeBot:
 
         try:
             # Get account
-            account = self.alpaca.get_account()
+            account = self.broker_data.get_account()
             if not account:
                 result["errors"].append("Failed to get account info")
                 return result
@@ -321,7 +325,7 @@ class ShortSqueezeBot:
             }
 
             # Get positions
-            positions = self.alpaca.get_positions()
+            positions = self.broker_data.get_positions()
             result["positions"] = len(positions)
 
             # Run scan
@@ -347,8 +351,8 @@ class ShortSqueezeBot:
 
     def get_status(self) -> dict:
         """Get current bot status."""
-        account = self.alpaca.get_account()
-        positions = self.alpaca.get_positions()
+        account = self.broker_data.get_account()
+        positions = self.broker_data.get_positions()
         watchlist_summary = self.watchlist.get_summary()
 
         return {
@@ -382,8 +386,8 @@ class ShortSqueezeBot:
             return {"ticker": ticker, "signal": False, "message": "No entry signal"}
 
         # Get account
-        account = self.alpaca.get_account()
-        positions = self.alpaca.get_positions()
+        account = self.broker_data.get_account()
+        positions = self.broker_data.get_positions()
 
         # Calculate position size
         position_size = self.position_sizer.calculate_position_size(
