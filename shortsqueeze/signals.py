@@ -13,7 +13,7 @@ from typing import Optional
 import pandas as pd
 from loguru import logger
 
-from .broker import BrokerDataClient, create_data_client
+from .broker import BrokerDataClient, FinnhubDataClient, create_data_client
 from .config import Config
 from .data import YahooFinanceData
 from .indicators import TechnicalAnalyzer, SqueezeState
@@ -87,6 +87,12 @@ class SignalDetector:
         self.yahoo = YahooFinanceData()
         self.analyzer = TechnicalAnalyzer(config.indicators)
         self.watchlist_manager = WatchlistManager(config)
+
+        # Finnhub client for volume data fallback
+        self.finnhub = None
+        if config.finnhub_api_key:
+            self.finnhub = FinnhubDataClient(config.finnhub_api_key)
+            logger.info("Finnhub volume data fallback enabled")
 
     def is_market_open(self) -> bool:
         """Check if the market is currently open (US Eastern Time)."""
@@ -172,9 +178,19 @@ class SignalDetector:
             # Calculate current day's volume
             today = now_eastern().date()
             current_volume = 0
+            finnhub_volume_data = None
+
             if not intraday.empty:
                 today_data = intraday[intraday.index.date == today]
                 current_volume = today_data["volume"].sum() if not today_data.empty else 0
+
+            # Fallback to Finnhub if Alpaca has no intraday volume
+            if current_volume == 0 and self.finnhub:
+                logger.debug(f"{ticker}: No Alpaca intraday data, trying Finnhub...")
+                finnhub_volume_data = self.finnhub.get_intraday_volume(ticker)
+                if finnhub_volume_data:
+                    current_volume = finnhub_volume_data.get("current_volume", 0)
+                    logger.debug(f"{ticker}: Finnhub volume={current_volume:,.0f}")
 
             # Get average volume
             avg_volume = daily_bars["volume"].rolling(20, min_periods=5).mean().iloc[-1]
@@ -183,6 +199,9 @@ class SignalDetector:
             # Also check stock_info for avg volume
             if (pd.isna(avg_volume) or avg_volume <= 0) and stock_info.get("avg_volume"):
                 avg_volume = stock_info["avg_volume"]
+            # Use Finnhub avg_volume if available and we don't have one
+            if (pd.isna(avg_volume) or avg_volume <= 0) and finnhub_volume_data:
+                avg_volume = finnhub_volume_data.get("avg_volume", 0)
 
             # Check entry conditions using technical analyzer
             minutes_since_open = self.get_minutes_since_open()
@@ -209,8 +228,12 @@ class SignalDetector:
             if minutes_since_open > 0 and avg_volume > 0 and current_volume > 0:
                 expected_volume = avg_volume * (minutes_since_open / 390)
                 volume_ratio = current_volume / expected_volume if expected_volume > 0 else 0
+            elif finnhub_volume_data and finnhub_volume_data.get("volume_ratio", 0) > 0:
+                # Use Finnhub's pre-calculated volume ratio as fallback
+                volume_ratio = finnhub_volume_data["volume_ratio"]
+                logger.debug(f"{ticker}: Using Finnhub volume_ratio={volume_ratio:.2f}x")
             else:
-                # If no intraday volume, use a default ratio based on daily volume
+                # If no intraday volume from any source, use a default ratio
                 volume_ratio = 1.0  # Neutral
 
             # Check primary triggers

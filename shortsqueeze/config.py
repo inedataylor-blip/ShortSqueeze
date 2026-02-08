@@ -100,6 +100,9 @@ class Config:
     # Broker selection (currently: "alpaca")
     broker_type: str = "alpaca"
 
+    # Finnhub API key for volume data fallback
+    finnhub_api_key: str = ""
+
     # Paths
     data_dir: Path = field(default_factory=lambda: Path("data"))
     log_level: str = "INFO"
@@ -119,6 +122,7 @@ class Config:
         config = cls(
             alpaca=AlpacaConfig.from_env(),
             broker_type=os.getenv("BROKER_TYPE", "alpaca").lower(),
+            finnhub_api_key=os.getenv("FINNHUB_API_KEY", ""),
             log_level=os.getenv("LOG_LEVEL", "INFO"),
         )
 

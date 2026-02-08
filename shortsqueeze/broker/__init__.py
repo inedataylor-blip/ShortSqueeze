@@ -14,12 +14,14 @@ To add a new broker:
 from .base import BrokerDataClient, BrokerTrader
 from .alpaca_data import AlpacaDataClient
 from .alpaca_trader import AlpacaTradeExecutor
+from .finnhub_data import FinnhubDataClient
 
 __all__ = [
     "BrokerDataClient",
     "BrokerTrader",
     "AlpacaDataClient",
     "AlpacaTradeExecutor",
+    "FinnhubDataClient",
     "create_data_client",
     "create_trader",
 ]
