@@ -23,7 +23,6 @@ import requests
 from bs4 import BeautifulSoup
 import yfinance as yf
 from loguru import logger
-from ratelimit import limits, sleep_and_retry
 
 # Try to import finvizfinance for more reliable Finviz access
 try:
