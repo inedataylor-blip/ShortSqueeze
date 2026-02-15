@@ -23,7 +23,6 @@ import requests
 from bs4 import BeautifulSoup
 import yfinance as yf
 from loguru import logger
-from ratelimit import limits, sleep_and_retry
 
 # Try to import finvizfinance for more reliable Finviz access
 try:
@@ -907,6 +906,7 @@ class YahooFinanceData:
                 "sector": info.get("sector"),
                 "industry": info.get("industry"),
                 "market_cap": info.get("marketCap"),
+                "volume": info.get("regularMarketVolume", info.get("volume")),
                 "avg_volume": info.get("averageVolume"),
                 "avg_volume_10d": info.get("averageVolume10days"),
                 "price": info.get("currentPrice", info.get("regularMarketPrice")),

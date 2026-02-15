@@ -178,24 +178,37 @@ class SignalDetector:
             # Calculate current day's volume
             today = now_eastern().date()
             current_volume = 0
+            volume_source = "none"
             finnhub_volume_data = None
 
             if not intraday.empty:
                 today_data = intraday[intraday.index.date == today]
                 current_volume = today_data["volume"].sum() if not today_data.empty else 0
+                if current_volume > 0:
+                    volume_source = "alpaca"
 
-            # Fallback to Finnhub if Alpaca has no intraday volume
+            # Fallback 1: Finnhub (real-time, free, needs key)
             if current_volume == 0 and self.finnhub:
                 logger.debug(f"{ticker}: No Alpaca intraday data, trying Finnhub...")
                 finnhub_volume_data = self.finnhub.get_intraday_volume(ticker)
-                if finnhub_volume_data:
-                    current_volume = finnhub_volume_data.get("current_volume", 0)
+                if finnhub_volume_data and finnhub_volume_data.get("current_volume", 0) > 0:
+                    current_volume = finnhub_volume_data["current_volume"]
+                    volume_source = "finnhub"
                     logger.debug(f"{ticker}: Finnhub volume={current_volume:,.0f}")
+
+            # Fallback 2: Yahoo Finance (delayed ~15min, free, no key needed)
+            if current_volume == 0 and yahoo_info.get("volume"):
+                current_volume = yahoo_info["volume"]
+                volume_source = "yahoo"
+                logger.debug(f"{ticker}: Using Yahoo volume={current_volume:,.0f}")
 
             # Get average volume
             avg_volume = daily_bars["volume"].rolling(20, min_periods=5).mean().iloc[-1]
             if pd.isna(avg_volume) or avg_volume <= 0:
                 avg_volume = daily_bars["volume"].mean()
+            # Yahoo avg volume fallback (already fetched, no extra call)
+            if (pd.isna(avg_volume) or avg_volume <= 0) and yahoo_info.get("avg_volume"):
+                avg_volume = yahoo_info["avg_volume"]
             # Also check stock_info for avg volume
             if (pd.isna(avg_volume) or avg_volume <= 0) and stock_info.get("avg_volume"):
                 avg_volume = stock_info["avg_volume"]
@@ -250,7 +263,7 @@ class SignalDetector:
 
             if not has_signal:
                 # Enhanced debug logging with actual values
-                vol_info = f"vol={volume_trigger} (ratio={volume_ratio:.1f}x, need {self.config.indicators.volume_multiplier}x)"
+                vol_info = f"vol={volume_trigger} (ratio={volume_ratio:.1f}x, need {self.config.indicators.volume_multiplier}x, src={volume_source})"
                 price_info = f"price={price_trigger} ({price_change_pct:+.1f}%, need +{self.config.indicators.min_price_change_pct}%)"
                 vwap_info = f"vwap={above_vwap}"
                 if vwap > 0:
