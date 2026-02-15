@@ -187,20 +187,20 @@ class SignalDetector:
                 if current_volume > 0:
                     volume_source = "alpaca"
 
-            # Fallback 1: Yahoo Finance (free, no key needed, already fetched)
-            if current_volume == 0 and yahoo_info.get("volume"):
-                current_volume = yahoo_info["volume"]
-                volume_source = "yahoo"
-                logger.debug(f"{ticker}: Using Yahoo volume={current_volume:,.0f}")
-
-            # Fallback 2: Finnhub (free, needs key)
+            # Fallback 1: Finnhub (real-time, free, needs key)
             if current_volume == 0 and self.finnhub:
-                logger.debug(f"{ticker}: No Alpaca/Yahoo volume, trying Finnhub...")
+                logger.debug(f"{ticker}: No Alpaca intraday data, trying Finnhub...")
                 finnhub_volume_data = self.finnhub.get_intraday_volume(ticker)
                 if finnhub_volume_data and finnhub_volume_data.get("current_volume", 0) > 0:
                     current_volume = finnhub_volume_data["current_volume"]
                     volume_source = "finnhub"
                     logger.debug(f"{ticker}: Finnhub volume={current_volume:,.0f}")
+
+            # Fallback 2: Yahoo Finance (delayed ~15min, free, no key needed)
+            if current_volume == 0 and yahoo_info.get("volume"):
+                current_volume = yahoo_info["volume"]
+                volume_source = "yahoo"
+                logger.debug(f"{ticker}: Using Yahoo volume={current_volume:,.0f}")
 
             # Get average volume
             avg_volume = daily_bars["volume"].rolling(20, min_periods=5).mean().iloc[-1]
