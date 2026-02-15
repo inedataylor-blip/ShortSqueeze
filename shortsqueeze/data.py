@@ -906,6 +906,7 @@ class YahooFinanceData:
                 "sector": info.get("sector"),
                 "industry": info.get("industry"),
                 "market_cap": info.get("marketCap"),
+                "volume": info.get("regularMarketVolume", info.get("volume")),
                 "avg_volume": info.get("averageVolume"),
                 "avg_volume_10d": info.get("averageVolume10days"),
                 "price": info.get("currentPrice", info.get("regularMarketPrice")),
