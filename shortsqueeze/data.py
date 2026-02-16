@@ -36,10 +36,15 @@ from .config import Config, ScreeningConfig
 
 
 # Rate limiting: 5 requests per second for Finviz
-@sleep_and_retry
-@limits(calls=5, period=1)
+_last_request_time = 0
+
 def _rate_limited_request(url: str, headers: dict) -> requests.Response:
     """Make a rate-limited HTTP request."""
+    global _last_request_time
+    elapsed = time.time() - _last_request_time
+    if elapsed < 0.2:  # 5 requests/sec = 0.2s between requests
+        time.sleep(0.2 - elapsed)
+    _last_request_time = time.time()
     return requests.get(url, headers=headers, timeout=30)
 
 
