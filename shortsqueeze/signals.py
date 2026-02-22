@@ -258,8 +258,12 @@ class SignalDetector:
             squeeze_fired = squeeze_state.squeeze_off if squeeze_state else False
             momentum_bullish = squeeze_state.bullish if squeeze_state else False
 
+            # Extreme move override: bypass squeeze/momentum requirement for very strong moves
+            # If price is up 20%+ with 5x+ volume, signal regardless of squeeze/momentum
+            extreme_move = price_change_pct >= 20.0 and volume_ratio >= 5.0
+
             # Determine if we have a valid signal
-            has_signal = primary_triggers_met and (squeeze_fired or momentum_bullish)
+            has_signal = primary_triggers_met and (squeeze_fired or momentum_bullish or extreme_move)
 
             if not has_signal:
                 # Enhanced debug logging with actual values
@@ -278,7 +282,9 @@ class SignalDetector:
                 return None
 
             # Determine signal strength
-            if squeeze_fired and momentum_bullish and price_change_pct >= 10:
+            if extreme_move:
+                strength = "strong"  # Extreme moves are always strong signals
+            elif squeeze_fired and momentum_bullish and price_change_pct >= 10:
                 strength = "strong"
             elif squeeze_fired or (momentum_bullish and price_change_pct >= 7):
                 strength = "moderate"
@@ -287,6 +293,8 @@ class SignalDetector:
 
             # Build reason string
             reasons = []
+            if extreme_move:
+                reasons.append("EXTREME MOVE")
             if squeeze_fired:
                 reasons.append("Squeeze fired")
             if momentum_bullish:
