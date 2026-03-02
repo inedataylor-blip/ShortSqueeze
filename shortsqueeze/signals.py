@@ -57,7 +57,9 @@ class EntrySignal:
     @property
     def should_trade(self) -> bool:
         """Determine if this signal warrants a trade."""
-        return self.primary_triggers_met and (self.squeeze_fired or self.momentum_bullish)
+        # Extreme move override: +20% with 5x volume bypasses squeeze/momentum requirement
+        extreme_move = self.price_change_pct >= 20.0 and self.volume_ratio >= 5.0
+        return self.primary_triggers_met and (self.squeeze_fired or self.momentum_bullish or extreme_move)
 
 
 @dataclass
@@ -236,6 +238,11 @@ class SignalDetector:
 
             # Calculate price change
             price_change_pct = ((current_price - previous_close) / previous_close) * 100
+
+            # Sanity check: filter out data errors (impossible price changes)
+            if abs(price_change_pct) > 1000:
+                logger.warning(f"{ticker}: Ignoring likely data error (price_change={price_change_pct:.1f}%, prev_close=${previous_close:.4f})")
+                return None
 
             # Calculate volume ratio (adjusted for time of day)
             if minutes_since_open > 0 and avg_volume > 0 and current_volume > 0:
