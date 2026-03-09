@@ -21,21 +21,27 @@ from datetime import datetime
 from loguru import logger
 
 from shortsqueeze import Config, ShortSqueezeBot
+from shortsqueeze.timezone import LOCAL_TZ
+
+
+def arizona_time(record):
+    """Format time in Arizona timezone (MST, no DST)."""
+    return record["time"].astimezone(LOCAL_TZ).strftime("%Y-%m-%d %H:%M:%S")
 
 
 def setup_logging(level: str = "INFO") -> None:
-    """Configure logging."""
+    """Configure logging with Arizona timezone."""
     logger.remove()
     logger.add(
         sys.stderr,
-        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <level>{message}</level>",
+        format=lambda r: f"<green>{arizona_time(r)}</green> | <level>{r['level'].name: <8}</level> | <level>{r['message']}</level>\n",
         level=level,
     )
     logger.add(
         "logs/bot.log",
         rotation="10 MB",
         retention="7 days",
-        format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function} - {message}",
+        format=lambda r: f"{arizona_time(r)} | {r['level'].name: <8} | {r['name']}:{r['function']} - {r['message']}\n",
         level="DEBUG",
     )
 
