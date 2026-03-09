@@ -11,6 +11,9 @@ from zoneinfo import ZoneInfo
 # US Eastern timezone (handles EST/EDT automatically)
 EASTERN_TZ = ZoneInfo("America/New_York")
 
+# Local timezone for display (Arizona - no DST)
+LOCAL_TZ = ZoneInfo("America/Phoenix")
+
 # Market hours in Eastern Time
 MARKET_OPEN = dt_time(9, 30)
 MARKET_CLOSE = dt_time(16, 0)
@@ -67,3 +70,20 @@ def get_market_close_today() -> datetime:
     """Get today's market close time in Eastern timezone."""
     now = now_eastern()
     return datetime.combine(now.date(), MARKET_CLOSE, tzinfo=EASTERN_TZ)
+
+
+def now_local() -> datetime:
+    """Get current datetime in local timezone (Arizona)."""
+    return datetime.now(LOCAL_TZ)
+
+
+def to_local(dt: datetime) -> datetime:
+    """Convert a datetime to local timezone (Arizona)."""
+    return dt.astimezone(LOCAL_TZ)
+
+
+def get_market_hours_local() -> tuple[str, str]:
+    """Get market hours in local timezone for display."""
+    market_open = get_market_open_today().astimezone(LOCAL_TZ)
+    market_close = get_market_close_today().astimezone(LOCAL_TZ)
+    return market_open.strftime("%I:%M %p"), market_close.strftime("%I:%M %p")
