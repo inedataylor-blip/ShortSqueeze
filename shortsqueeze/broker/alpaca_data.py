@@ -5,8 +5,10 @@ Provides market data (quotes, bars) and account/position information
 via the Alpaca SDK.
 """
 
+import time
 from datetime import datetime, timedelta
-from typing import Optional
+from functools import wraps
+from typing import Optional, Callable, TypeVar
 
 import pandas as pd
 from alpaca.data import StockHistoricalDataClient
@@ -16,6 +18,63 @@ from alpaca.trading.client import TradingClient
 from loguru import logger
 
 from .base import BrokerDataClient
+
+T = TypeVar('T')
+
+
+def retry_on_connection_error(max_retries: int = 3, base_delay: float = 1.0):
+    """
+    Decorator to retry API calls on connection errors with exponential backoff.
+
+    Args:
+        max_retries: Maximum number of retry attempts
+        base_delay: Base delay in seconds (doubles each retry)
+    """
+    def decorator(func: Callable[..., T]) -> Callable[..., T]:
+        @wraps(func)
+        def wrapper(*args, **kwargs) -> T:
+            last_exception = None
+            for attempt in range(max_retries + 1):
+                try:
+                    return func(*args, **kwargs)
+                except (ConnectionError, ConnectionResetError,
+                        ConnectionAbortedError, BrokenPipeError) as e:
+                    last_exception = e
+                    if attempt < max_retries:
+                        delay = base_delay * (2 ** attempt)
+                        logger.warning(
+                            f"Connection error in {func.__name__}, "
+                            f"retrying in {delay}s ({attempt + 1}/{max_retries}): {e}"
+                        )
+                        time.sleep(delay)
+                    else:
+                        logger.error(
+                            f"Connection error in {func.__name__} after "
+                            f"{max_retries} retries: {e}"
+                        )
+                except Exception as e:
+                    # Check for remote disconnected errors in the exception chain
+                    error_str = str(e).lower()
+                    if "remote" in error_str or "disconnected" in error_str or "connection" in error_str:
+                        last_exception = e
+                        if attempt < max_retries:
+                            delay = base_delay * (2 ** attempt)
+                            logger.warning(
+                                f"Remote connection error in {func.__name__}, "
+                                f"retrying in {delay}s ({attempt + 1}/{max_retries}): {e}"
+                            )
+                            time.sleep(delay)
+                        else:
+                            logger.error(
+                                f"Remote connection error in {func.__name__} after "
+                                f"{max_retries} retries: {e}"
+                            )
+                    else:
+                        raise
+            # Return empty/default value on final failure
+            raise last_exception
+        return wrapper
+    return decorator
 
 
 class AlpacaDataClient(BrokerDataClient):
@@ -158,8 +217,9 @@ class AlpacaDataClient(BrokerDataClient):
         start = datetime.now() - timedelta(days=days)
         return self.get_bars(symbol, timeframe="day", start=start)
 
+    @retry_on_connection_error(max_retries=3, base_delay=2.0)
     def get_account(self) -> dict:
-        """Get account information."""
+        """Get account information with automatic retry on connection errors."""
         try:
             account = self.trading_client.get_account()
             return {
@@ -176,8 +236,9 @@ class AlpacaDataClient(BrokerDataClient):
             logger.error(f"Error fetching account: {e}")
             return {}
 
+    @retry_on_connection_error(max_retries=3, base_delay=2.0)
     def get_positions(self) -> list:
-        """Get all open positions."""
+        """Get all open positions with automatic retry on connection errors."""
         try:
             positions = self.trading_client.get_all_positions()
             return [{

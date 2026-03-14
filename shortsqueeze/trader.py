@@ -76,6 +76,8 @@ class TradeManager:
         self.config = config
         self.executor = executor or create_trader(config)
         self.trades_file = config.trades_path
+        # Track recently closed positions to prevent duplicate close attempts
+        self._pending_closes: set[str] = set()
 
     def execute_entry(
         self,
@@ -158,19 +160,36 @@ class TradeManager:
         Returns:
             Trade object or None if failed
         """
-        # Cancel any open orders for this ticker first
-        open_orders = self.executor.get_open_orders(ticker)
-        for order in open_orders:
-            self.executor.cancel_order(order["id"])
+        # Prevent duplicate close attempts
+        ticker_upper = ticker.upper()
+        if ticker_upper in self._pending_closes:
+            logger.debug(f"Skipping duplicate close attempt for {ticker}")
+            return None
 
-        # Close position
-        trade = self.executor.close_position(ticker)
+        self._pending_closes.add(ticker_upper)
 
-        if trade:
-            trade.reason = reason
-            self._log_trade(trade)
+        try:
+            # Cancel any open orders for this ticker first
+            open_orders = self.executor.get_open_orders(ticker)
+            for order in open_orders:
+                self.executor.cancel_order(order["id"])
 
-        return trade
+            # Close position
+            trade = self.executor.close_position(ticker)
+
+            if trade:
+                trade.reason = reason
+                self._log_trade(trade)
+
+            return trade
+        finally:
+            # Remove from pending after a delay to prevent rapid retries
+            # The position monitor runs every minute, so 30s is safe
+            import threading
+            def clear_pending():
+                time.sleep(30)
+                self._pending_closes.discard(ticker_upper)
+            threading.Thread(target=clear_pending, daemon=True).start()
 
     def _log_trade(self, trade: Trade) -> None:
         """Log trade to JSON file."""
