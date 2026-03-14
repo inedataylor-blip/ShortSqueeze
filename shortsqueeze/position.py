@@ -90,7 +90,11 @@ class PositionSizer:
             return None
 
         # Calculate dollar risk for this trade
-        risk_amount = account_equity * self.risk_config.risk_per_trade
+        # Scale up risk for higher-priced stocks to maintain meaningful position sizes
+        base_risk = self.risk_config.risk_per_trade
+        risk_multiplier = self._get_price_risk_multiplier(entry_price)
+        adjusted_risk_per_trade = min(base_risk * risk_multiplier, 0.02)  # Cap at 2%
+        risk_amount = account_equity * adjusted_risk_per_trade
 
         # Calculate number of shares
         shares = int(risk_amount / risk_per_share)
@@ -113,6 +117,25 @@ class PositionSizer:
             )
 
         if shares <= 0:
+            return None
+
+        # Check minimum position thresholds
+        min_shares = getattr(self.risk_config, 'min_shares', 10)
+        min_value = getattr(self.risk_config, 'min_position_value', 500.0)
+
+        if shares < min_shares:
+            logger.info(
+                f"Position size for {signal.ticker} too small: {shares} shares "
+                f"(minimum {min_shares}). Stock price ${entry_price:.2f} too high "
+                f"for current risk parameters."
+            )
+            return None
+
+        if position_value < min_value:
+            logger.info(
+                f"Position value for {signal.ticker} too small: ${position_value:.2f} "
+                f"(minimum ${min_value:.2f})"
+            )
             return None
 
         # Recalculate actual risk after adjustment
@@ -155,6 +178,31 @@ class PositionSizer:
             return base_stop * 1.2
 
         return base_stop
+
+    def _get_price_risk_multiplier(self, price: float) -> float:
+        """
+        Calculate risk multiplier based on stock price.
+
+        Higher-priced stocks get increased risk allocation to maintain
+        meaningful position sizes while staying within risk limits.
+
+        Price tiers:
+        - Under $10: 1.0x (base risk)
+        - $10-$25: 1.5x
+        - $25-$50: 2.0x
+        - $50-$100: 2.5x
+        - Over $100: 3.0x
+        """
+        if price < 10:
+            return 1.0
+        elif price < 25:
+            return 1.5
+        elif price < 50:
+            return 2.0
+        elif price < 100:
+            return 2.5
+        else:
+            return 3.0
 
     def validate_position(
         self,

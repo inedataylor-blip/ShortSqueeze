@@ -77,6 +77,9 @@ class RiskConfig:
     max_position_size: float = 0.20  # 20% max allocation per position
     default_stop_loss_pct: float = 0.08  # 8% stop loss
     trailing_stop_pct: float = 0.05  # 5% trailing stop
+    # Minimum position thresholds to avoid tiny positions
+    min_position_value: float = 500.0  # Minimum $500 position value
+    min_shares: int = 10  # Minimum 10 shares per position
 
 
 @dataclass
