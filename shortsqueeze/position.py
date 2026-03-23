@@ -220,8 +220,12 @@ class PositionSizer:
         if position.position_value > buying_power:
             return False, f"Insufficient buying power (need ${position.position_value:.2f}, have ${buying_power:.2f})"
 
-        # Check risk limits
-        max_risk = account_equity * self.risk_config.risk_per_trade * 1.5  # Allow 50% buffer
+        # Check risk limits - use same price-based multiplier as position sizing
+        risk_multiplier = self._get_price_risk_multiplier(position.entry_price)
+        adjusted_risk_per_trade = min(
+            self.risk_config.risk_per_trade * risk_multiplier, 0.02
+        )
+        max_risk = account_equity * adjusted_risk_per_trade * 1.1  # Allow 10% buffer
         if position.risk_amount > max_risk:
             return False, f"Risk amount (${position.risk_amount:.2f}) exceeds limit"
 
