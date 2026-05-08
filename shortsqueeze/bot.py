@@ -38,7 +38,11 @@ class ShortSqueezeBot:
 
         # Initialize strategy components
         self.watchlist = WatchlistManager(self.config)
-        self.signal_detector = SignalDetector(self.config, broker_data=self.broker_data)
+        self.signal_detector = SignalDetector(
+            self.config,
+            broker_data=self.broker_data,
+            watchlist_manager=self.watchlist,
+        )
         self.signal_filter = SignalFilter(self.config)
         self.position_sizer = PositionSizer(self.config)
         self.risk_manager = RiskManager(self.config)
