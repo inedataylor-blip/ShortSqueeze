@@ -5,7 +5,6 @@ Handles data retrieval from:
 - Finviz: Stock screening and short interest data (via finvizfinance package)
 - Yahoo Finance: Short interest verification, fundamentals, and dynamic screening
 - HighShortInterest.com: Supplementary short interest data
-- Fintel: Short Squeeze Leaderboard
 - SEC EDGAR: Fail-to-Deliver data (high FTDs = hard to borrow = squeeze pressure)
 
 Broker-specific market data is handled by the broker/ package.
@@ -14,6 +13,7 @@ Broker-specific market data is handled by the broker/ package.
 import io
 import time
 import zipfile
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta
 from typing import Optional, List
 
@@ -525,149 +525,6 @@ class HighShortInterestScraper:
             return None
 
 
-class FintelScraper:
-    """
-    Scraper for Fintel.io Short Squeeze Leaderboard.
-
-    Fintel provides a proprietary Short Squeeze Score based on:
-    - Short Interest % Float
-    - Short Borrow Fee Rates
-    - Float utilization
-    - Other factors
-
-    Note: Full access requires subscription, but basic data may be available.
-    """
-
-    BASE_URL = "https://fintel.io/shortSqueeze"
-    HEADERS = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                      "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.5",
-        "Connection": "keep-alive",
-        "Referer": "https://fintel.io/",
-    }
-
-    def __init__(self, config: ScreeningConfig):
-        self.config = config
-
-    def get_short_squeeze_candidates(self) -> pd.DataFrame:
-        """
-        Scrape Fintel Short Squeeze Leaderboard.
-
-        Returns:
-            DataFrame with columns: ticker, company, squeeze_score, short_float_pct, etc.
-        """
-        logger.info("Scraping Fintel Short Squeeze Leaderboard...")
-
-        all_stocks = []
-
-        try:
-            response = requests.get(self.BASE_URL, headers=self.HEADERS, timeout=30)
-
-            if response.status_code == 403:
-                logger.warning("Fintel access denied (may require subscription)")
-                return pd.DataFrame()
-
-            response.raise_for_status()
-            soup = BeautifulSoup(response.text, "lxml")
-
-            # Find the leaderboard table
-            table = soup.find("table", {"class": ["table", "leaderboard"]})
-            if not table:
-                # Try alternative selectors
-                table = soup.find("table")
-
-            if not table:
-                logger.warning("Could not find Fintel leaderboard table")
-                return pd.DataFrame()
-
-            rows = table.find_all("tr")
-
-            for row in rows[1:]:  # Skip header row
-                cols = row.find_all("td")
-                if len(cols) < 3:
-                    continue
-
-                try:
-                    # Find ticker - usually in a link
-                    ticker_elem = row.find("a", href=lambda x: x and "/ss/us/" in x)
-                    if not ticker_elem:
-                        # Try finding by text pattern
-                        for col in cols:
-                            text = col.text.strip().upper()
-                            if text and text.isalpha() and 1 <= len(text) <= 5:
-                                ticker = text
-                                break
-                        else:
-                            continue
-                    else:
-                        ticker = ticker_elem.text.strip().upper()
-
-                    if not ticker:
-                        continue
-
-                    # Parse other columns
-                    col_texts = [c.text.strip() for c in cols]
-
-                    squeeze_score = None
-                    short_float_pct = None
-                    company = ""
-
-                    for i, text in enumerate(col_texts):
-                        # Squeeze score (0-100)
-                        if squeeze_score is None:
-                            try:
-                                val = float(text)
-                                if 0 <= val <= 100:
-                                    squeeze_score = val
-                                    continue
-                            except ValueError:
-                                pass
-
-                        # Short interest percentage
-                        if "%" in text and short_float_pct is None:
-                            try:
-                                short_float_pct = float(text.replace("%", "").strip())
-                            except ValueError:
-                                pass
-
-                        # Company name (longer text without numbers)
-                        if len(text) > 10 and not any(c.isdigit() for c in text[:5]):
-                            company = text
-
-                    all_stocks.append({
-                        "ticker": ticker,
-                        "company": company,
-                        "squeeze_score": squeeze_score,
-                        "short_float_pct": short_float_pct or 20.0,  # Default if not found
-                        "sector": "",
-                        "industry": "",
-                        "market_cap": None,
-                        "price": None,
-                    })
-
-                except Exception as e:
-                    logger.debug(f"Error parsing Fintel row: {e}")
-                    continue
-
-            df = pd.DataFrame(all_stocks)
-
-            # Sort by squeeze score if available
-            if not df.empty and "squeeze_score" in df.columns:
-                df = df.sort_values("squeeze_score", ascending=False)
-
-            logger.info(f"Fintel found {len(df)} short squeeze candidates")
-            return df
-
-        except requests.RequestException as e:
-            logger.warning(f"Failed to fetch Fintel: {e}")
-            return pd.DataFrame()
-        except Exception as e:
-            logger.error(f"Error scraping Fintel: {e}")
-            return pd.DataFrame()
-
-
 class SECFailToDeliverScraper:
     """
     Fetches Fail-to-Deliver (FTD) data from SEC EDGAR.
@@ -1032,7 +889,6 @@ class DataManager:
         self.finviz_package = FinvizFinanceScreener(config.screening) if FINVIZFINANCE_AVAILABLE else None
         self.finviz_manual = FinvizScraper(config.screening)
         self.highshortinterest = HighShortInterestScraper(config.screening)
-        self.fintel = FintelScraper(config.screening)
         self.sec_ftd = SECFailToDeliverScraper(config.screening)
         self.yahoo = YahooFinanceData()
 
@@ -1044,8 +900,7 @@ class DataManager:
         1. finvizfinance package (most reliable Finviz access)
         2. Manual Finviz scraper (custom BeautifulSoup)
         3. HighShortInterest.com scraper
-        4. Fintel Short Squeeze Leaderboard
-        5. SEC EDGAR Fail-to-Deliver data (high FTDs = squeeze pressure)
+        4. SEC EDGAR Fail-to-Deliver data (high FTDs = squeeze pressure)
 
         All results are merged and deduplicated to maximize coverage.
         If all scrapers fail, returns empty DataFrame (no false positives).
@@ -1094,19 +949,7 @@ class DataManager:
         except Exception as e:
             logger.warning(f"highshortinterest.com error: {e}")
 
-        # SOURCE 4: Try Fintel Short Squeeze Leaderboard
-        sources_tried += 1
-        logger.info("Fetching from Fintel Short Squeeze Leaderboard...")
-        try:
-            df = self.fintel.get_short_squeeze_candidates()
-            if not df.empty:
-                logger.info(f"Fintel found {len(df)} candidates")
-                all_candidates.append(df)
-                sources_succeeded += 1
-        except Exception as e:
-            logger.warning(f"Fintel error: {e}")
-
-        # SOURCE 5: SEC EDGAR Fail-to-Deliver data
+        # SOURCE 4: SEC EDGAR Fail-to-Deliver data
         sources_tried += 1
         logger.info("Fetching SEC Fail-to-Deliver data...")
         try:
@@ -1148,37 +991,35 @@ class DataManager:
         logger.info(f"Final watchlist: {len(result)} verified squeeze candidates")
         return result
 
-    def _verify_with_yahoo(self, df: pd.DataFrame) -> list:
-        """Verify and enrich candidates with Yahoo Finance data."""
-        verified = []
-        skipped = 0
-        for _, row in df.iterrows():
-            ticker = row["ticker"]
-            yahoo_info = self.yahoo.get_stock_info(ticker)
+    def _verify_with_yahoo(self, df: pd.DataFrame, max_workers: int = 8) -> list:
+        """Verify and enrich candidates with Yahoo Finance data in parallel.
 
-            # Get short interest from Yahoo or Finviz
+        Tickers without short-float data from either Yahoo or Finviz are dropped
+        (no permissive default). Tickers without price data are also dropped.
+        """
+        min_short = self.config.screening.min_short_float_pct
+
+        def _verify_one(row: dict) -> Optional[dict]:
+            ticker = row["ticker"]
+            yahoo_info = self.yahoo.get_stock_info(ticker) or {}
+
             yahoo_short = yahoo_info.get("short_percent_of_float")
             finviz_short = row.get("short_float_pct")
 
-            # Use Yahoo data if available, otherwise trust Finviz
-            if yahoo_short and yahoo_short >= self.config.screening.min_short_float_pct:
+            if yahoo_short and yahoo_short >= min_short:
                 verified_short = yahoo_short
-            elif finviz_short and finviz_short >= self.config.screening.min_short_float_pct:
+            elif finviz_short and finviz_short >= min_short:
                 verified_short = finviz_short
             else:
-                # Trust Finviz filter results even without exact value
-                # The filter was 'Float Short': 'Over 20%', so stocks should qualify
-                verified_short = self.config.screening.min_short_float_pct
-                logger.debug(f"{ticker}: No short float data from Yahoo or Finviz, using filter default")
+                logger.debug(f"{ticker}: No short float data from Yahoo or Finviz, dropping (unverified)")
+                return None
 
-            # Get price - need at least this to be useful
             price = yahoo_info.get("price") or row.get("price")
             if not price or price <= 0:
-                skipped += 1
                 logger.debug(f"{ticker}: Skipped - no valid price data")
-                continue
+                return None
 
-            verified.append({
+            return {
                 "ticker": ticker,
                 "company": row.get("company") or yahoo_info.get("name"),
                 "sector": yahoo_info.get("sector") or row.get("sector"),
@@ -1190,10 +1031,24 @@ class DataManager:
                 "short_ratio": yahoo_info.get("short_ratio"),
                 "previous_close": yahoo_info.get("previous_close"),
                 "exchange": yahoo_info.get("exchange"),
-            })
+            }
 
-            time.sleep(0.2)  # Rate limiting for Yahoo
+        rows = df.to_dict(orient="records")
+        verified: list = []
 
-        if skipped > 0:
-            logger.info(f"Skipped {skipped} stocks due to missing price data")
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            futures = {executor.submit(_verify_one, row): row["ticker"] for row in rows}
+            for future in as_completed(futures):
+                ticker = futures[future]
+                try:
+                    result = future.result()
+                except Exception as e:
+                    logger.debug(f"{ticker}: Verification error: {e}")
+                    continue
+                if result is not None:
+                    verified.append(result)
+
+        dropped = len(rows) - len(verified)
+        if dropped > 0:
+            logger.info(f"Dropped {dropped} candidates during verification (unverified or missing price)")
         return verified

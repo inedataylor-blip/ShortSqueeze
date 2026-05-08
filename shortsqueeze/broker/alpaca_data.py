@@ -127,6 +127,70 @@ class AlpacaDataClient(BrokerDataClient):
             logger.error(f"Error fetching quote for {symbol}: {e}")
             return {}
 
+    @retry_on_connection_error(max_retries=3, base_delay=2.0)
+    def _get_bars_with_retry(
+        self,
+        symbol: str,
+        timeframe: str,
+        start: Optional[datetime],
+        end: Optional[datetime],
+    ) -> pd.DataFrame:
+        """Inner bars fetch — connection errors propagate so the decorator can retry."""
+        if start is None:
+            start = datetime.now() - timedelta(days=5)
+        if end is None:
+            end = datetime.now()
+
+        alpaca_timeframe = self._to_alpaca_timeframe(timeframe)
+
+        request = StockBarsRequest(
+            symbol_or_symbols=symbol,
+            timeframe=alpaca_timeframe,
+            start=start,
+            end=end,
+        )
+
+        bars = self.data_client.get_stock_bars(request)
+
+        # Handle different response formats from Alpaca SDK
+        data = []
+        try:
+            if hasattr(bars, 'data'):
+                bar_data = bars.data
+                if isinstance(bar_data, dict) and symbol in bar_data:
+                    data = bar_data[symbol]
+                elif hasattr(bar_data, 'get'):
+                    data = bar_data.get(symbol, [])
+            if not data:
+                try:
+                    data = bars[symbol]
+                except (KeyError, TypeError):
+                    pass
+            if not data:
+                data = [b for b in bars if getattr(b, 'symbol', None) == symbol]
+        except Exception as e:
+            logger.debug(f"Error parsing Alpaca response for {symbol}: {e}")
+            data = []
+
+        if not data:
+            return pd.DataFrame()
+
+        df = pd.DataFrame([{
+            "timestamp": bar.timestamp,
+            "open": float(bar.open),
+            "high": float(bar.high),
+            "low": float(bar.low),
+            "close": float(bar.close),
+            "volume": int(bar.volume) if bar.volume else 0,
+            "vwap": float(bar.vwap) if hasattr(bar, 'vwap') and bar.vwap else None,
+            "trade_count": getattr(bar, 'trade_count', 0),
+        } for bar in data])
+
+        df.set_index("timestamp", inplace=True)
+        if df.index.tz is not None:
+            df.index = df.index.tz_localize(None)
+        return df
+
     def get_bars(
         self,
         symbol: str,
@@ -135,63 +199,13 @@ class AlpacaDataClient(BrokerDataClient):
         end: Optional[datetime] = None,
         limit: int = 1000,
     ) -> pd.DataFrame:
-        """Get historical bar data from Alpaca."""
+        """Get historical bar data from Alpaca.
+
+        Returns an empty DataFrame on terminal failure (post-retry) so callers
+        can fall back to other data sources without exception handling.
+        """
         try:
-            if start is None:
-                start = datetime.now() - timedelta(days=5)
-            if end is None:
-                end = datetime.now()
-
-            alpaca_timeframe = self._to_alpaca_timeframe(timeframe)
-
-            request = StockBarsRequest(
-                symbol_or_symbols=symbol,
-                timeframe=alpaca_timeframe,
-                start=start,
-                end=end,
-            )
-
-            bars = self.data_client.get_stock_bars(request)
-
-            # Handle different response formats from Alpaca SDK
-            data = []
-            try:
-                if hasattr(bars, 'data'):
-                    bar_data = bars.data
-                    if isinstance(bar_data, dict) and symbol in bar_data:
-                        data = bar_data[symbol]
-                    elif hasattr(bar_data, 'get'):
-                        data = bar_data.get(symbol, [])
-                if not data:
-                    try:
-                        data = bars[symbol]
-                    except (KeyError, TypeError):
-                        pass
-                if not data:
-                    data = [b for b in bars if getattr(b, 'symbol', None) == symbol]
-            except Exception as e:
-                logger.debug(f"Error parsing Alpaca response for {symbol}: {e}")
-                data = []
-
-            if not data:
-                return pd.DataFrame()
-
-            df = pd.DataFrame([{
-                "timestamp": bar.timestamp,
-                "open": float(bar.open),
-                "high": float(bar.high),
-                "low": float(bar.low),
-                "close": float(bar.close),
-                "volume": int(bar.volume) if bar.volume else 0,
-                "vwap": float(bar.vwap) if hasattr(bar, 'vwap') and bar.vwap else None,
-                "trade_count": getattr(bar, 'trade_count', 0),
-            } for bar in data])
-
-            df.set_index("timestamp", inplace=True)
-            if df.index.tz is not None:
-                df.index = df.index.tz_localize(None)
-            return df
-
+            return self._get_bars_with_retry(symbol, timeframe, start, end)
         except Exception as e:
             logger.debug(f"Alpaca bars error for {symbol}: {e}")
             return pd.DataFrame()

@@ -83,12 +83,19 @@ class ScanResult:
 class SignalDetector:
     """Detects entry signals for short squeeze trades."""
 
-    def __init__(self, config: Config, broker_data: Optional[BrokerDataClient] = None):
+    def __init__(
+        self,
+        config: Config,
+        broker_data: Optional[BrokerDataClient] = None,
+        watchlist_manager: Optional[WatchlistManager] = None,
+    ):
         self.config = config
         self.broker_data = broker_data or create_data_client(config)
         self.yahoo = YahooFinanceData()
         self.analyzer = TechnicalAnalyzer(config.indicators)
-        self.watchlist_manager = WatchlistManager(config)
+        # Share the caller's WatchlistManager so refreshes are visible here.
+        # Falling back to a new instance keeps standalone callers (e.g. CLI) working.
+        self.watchlist_manager = watchlist_manager or WatchlistManager(config)
 
         # Finnhub client for volume data fallback
         self.finnhub = None
@@ -174,31 +181,25 @@ class SignalDetector:
 
             logger.debug(f"{ticker}: price=${current_price:.2f}, prev_close=${previous_close:.2f} (source: {previous_close_source})")
 
-            # Get intraday bars for VWAP (try Alpaca, but don't fail if not available)
+            # Get intraday bars for VWAP only. Alpaca's free IEX feed reports
+            # only IEX-routed trades (~2-5% of consolidated volume), so we do NOT
+            # use it to compute current_volume.
             intraday = self.broker_data.get_intraday_bars(ticker, minutes=5, days_back=1)
 
-            # Calculate current day's volume
-            today = now_eastern().date()
+            # Calculate current day's volume from consolidated sources
             current_volume = 0
             volume_source = "none"
             finnhub_volume_data = None
 
-            if not intraday.empty:
-                today_data = intraday[intraday.index.date == today]
-                current_volume = today_data["volume"].sum() if not today_data.empty else 0
-                if current_volume > 0:
-                    volume_source = "alpaca"
-
-            # Fallback 1: Finnhub (real-time, free, needs key)
-            if current_volume == 0 and self.finnhub:
-                logger.debug(f"{ticker}: No Alpaca intraday data, trying Finnhub...")
+            # Primary: Finnhub (real-time, free with API key)
+            if self.finnhub:
                 finnhub_volume_data = self.finnhub.get_intraday_volume(ticker)
                 if finnhub_volume_data and finnhub_volume_data.get("current_volume", 0) > 0:
                     current_volume = finnhub_volume_data["current_volume"]
                     volume_source = "finnhub"
                     logger.debug(f"{ticker}: Finnhub volume={current_volume:,.0f}")
 
-            # Fallback 2: Yahoo Finance (delayed ~15min, free, no key needed)
+            # Fallback: Yahoo Finance (delayed ~15min, free, no key needed)
             if current_volume == 0 and yahoo_info.get("volume"):
                 current_volume = yahoo_info["volume"]
                 volume_source = "yahoo"
@@ -258,7 +259,7 @@ class SignalDetector:
 
             # Check primary triggers
             price_trigger = price_change_pct >= self.config.indicators.min_price_change_pct
-            volume_trigger = volume_ratio >= self.config.indicators.volume_multiplier or current_volume == 0
+            volume_trigger = current_volume > 0 and volume_ratio >= self.config.indicators.volume_multiplier
             primary_triggers_met = price_trigger and volume_trigger and above_vwap
 
             # Check squeeze conditions

@@ -4,7 +4,7 @@ A fully automated trading bot that scans for heavily shorted stocks, detects squ
 
 ## Features
 
-- **Multi-Source Discovery**: Daily scan across Finviz, HighShortInterest.com, and Fintel for high short interest stocks (>20% of float)
+- **Multi-Source Discovery**: Daily scan across Finviz and HighShortInterest.com for high short interest stocks (>20% of float)
 - **Dual Watchlists**: Separate quality ($5+) and speculative ($1-$5) watchlists for comprehensive coverage
 - **Real-time Signal Detection**: Intraday scanning every 15 minutes during market hours
 - **LazyBear Squeeze Momentum**: Implementation of the popular TradingView indicator
@@ -19,7 +19,6 @@ A fully automated trading bot that scans for heavily shorted stocks, detects squ
 | Short Interest Screening | Finviz (finvizfinance) | Daily | finvizfinance |
 | Short Interest Screening | Finviz (manual scraper) | Daily | BeautifulSoup |
 | Short Interest Screening | HighShortInterest.com | Daily | BeautifulSoup |
-| Short Squeeze Scores | Fintel Leaderboard | Daily | BeautifulSoup |
 | Short Interest Verification | Yahoo Finance | ~2x monthly (lagged) | yfinance |
 | Price/Volume Data | Alpaca API | Real-time | alpaca-trade-api |
 | Historical OHLCV | Alpaca/Yahoo | Daily/Intraday | alpaca-trade-api/yfinance |
@@ -110,7 +109,7 @@ python main.py --debug
 1. **Finviz** (finvizfinance package) — Most reliable screener access
 2. **Finviz** (manual scraper) — Backup BeautifulSoup scraper
 3. **HighShortInterest.com** — Curated list of top shorted stocks
-4. **Fintel Short Squeeze Leaderboard** — Proprietary squeeze scoring model
+4. **SEC EDGAR Fail-to-Deliver data** — High FTDs as a squeeze-pressure signal
 
 If all scrapers fail, the bot returns an empty watchlist (no false positives from stale data).
 
@@ -207,7 +206,7 @@ ShortSqueeze/
 ├── shortsqueeze/
 │   ├── __init__.py        # Package init
 │   ├── config.py          # Configuration management
-│   ├── data.py            # Data fetching (Finviz, HighShortInterest, Fintel, Yahoo, Alpaca)
+│   ├── data.py            # Data fetching (Finviz, HighShortInterest, SEC FTD, Yahoo, Alpaca)
 │   ├── indicators.py      # Technical indicators (Squeeze Momentum)
 │   ├── universe.py        # Dual watchlist management (quality + speculative)
 │   ├── signals.py         # Entry signal detection
