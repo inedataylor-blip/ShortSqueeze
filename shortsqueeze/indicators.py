@@ -274,8 +274,17 @@ def get_current_squeeze_state(df: pd.DataFrame) -> Optional[SqueezeState]:
 
     last = df.iloc[-1]
 
-    # Handle NaN values
+    # NaN momentum at the most recent bar means we don't have enough lookback
+    # for the linear regression of (close - midline) over kc_length to fire
+    # (needs roughly 2 * kc_length bars). Surface this once per process so a
+    # silently-dead squeeze indicator can't go unnoticed in production.
     if pd.isna(last["momentum"]):
+        if not getattr(get_current_squeeze_state, "_nan_warned", False):
+            logger.warning(
+                f"Squeeze momentum is NaN at last bar (bars={len(df)}). "
+                "Increase the daily-bars lookback to >= 2 * kc_length."
+            )
+            get_current_squeeze_state._nan_warned = True
         return None
 
     return SqueezeState(

@@ -133,12 +133,15 @@ class SignalDetector:
             if quote:
                 current_price = (quote.get("bid", 0) + quote.get("ask", 0)) / 2
 
-            # Get daily bars - try Alpaca first, then Yahoo fallback
-            daily_bars = self.broker_data.get_daily_bars(ticker, days=30)
+            # Get daily bars - try Alpaca first, then Yahoo fallback.
+            # Need ~2 * kc_length (=40) bars for the squeeze momentum's linear
+            # regression to produce a non-NaN value at the most recent bar, so
+            # ask for ~90 calendar days (~60 trading bars) to have headroom.
+            daily_bars = self.broker_data.get_daily_bars(ticker, days=90)
 
             if daily_bars.empty or len(daily_bars) < 15:
                 logger.debug(f"{ticker}: Alpaca returned insufficient data, trying Yahoo...")
-                yahoo_data = self.yahoo.get_historical_data(ticker, period="1mo", interval="1d")
+                yahoo_data = self.yahoo.get_historical_data(ticker, period="3mo", interval="1d")
                 if not yahoo_data.empty:
                     # Rename columns to match our expected format
                     daily_bars = yahoo_data.rename(columns={
@@ -283,6 +286,8 @@ class SignalDetector:
                 squeeze_info = f"squeeze={squeeze_fired}, mom={momentum_bullish}"
                 if squeeze_state:
                     squeeze_info += f" (mom_val={squeeze_state.momentum_value:.2f})"
+                else:
+                    squeeze_info += " (no state)"
 
                 logger.debug(
                     f"{ticker}: No signal - {price_info}, {vol_info}, {vwap_info}, {squeeze_info}"
