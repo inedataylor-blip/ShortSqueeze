@@ -211,6 +211,20 @@ class ShortSqueezeBot:
             logger.info(f"Skipping {ticker}: {warning}")
             return
 
+        # Block re-entry when a BUY for this ticker is still pending. A limit
+        # order from a prior scan may not have filled yet, so positions[] is
+        # still empty even though we're effectively long.
+        try:
+            open_orders = self.broker_trader.get_open_orders(ticker)
+        except Exception as e:
+            logger.warning(f"{ticker}: could not fetch open orders ({e}); proceeding")
+            open_orders = []
+        pending_buys = [o for o in open_orders if o.get("side", "").lower() == "buy"]
+        if pending_buys:
+            order_ids = ", ".join(o.get("id", "?") for o in pending_buys)
+            logger.info(f"Skipping {ticker}: pending BUY order(s) already open ({order_ids})")
+            return
+
         # Calculate position size
         position_size = self.position_sizer.calculate_position_size(
             signal=signal,
