@@ -232,40 +232,48 @@ class AlpacaDataClient(BrokerDataClient):
         return self.get_bars(symbol, timeframe="day", start=start)
 
     @retry_on_connection_error(max_retries=3, base_delay=2.0)
+    def _get_account_with_retry(self) -> dict:
+        """Inner account fetch — connection errors propagate so the decorator can retry."""
+        account = self.trading_client.get_account()
+        return {
+            "equity": float(account.equity),
+            "cash": float(account.cash),
+            "buying_power": float(account.buying_power),
+            "portfolio_value": float(account.portfolio_value),
+            "currency": account.currency,
+            "pattern_day_trader": account.pattern_day_trader,
+            "trading_blocked": account.trading_blocked,
+            "account_blocked": account.account_blocked,
+        }
+
     def get_account(self) -> dict:
-        """Get account information with automatic retry on connection errors."""
+        """Get account information. Returns {} on terminal failure (post-retry)."""
         try:
-            account = self.trading_client.get_account()
-            return {
-                "equity": float(account.equity),
-                "cash": float(account.cash),
-                "buying_power": float(account.buying_power),
-                "portfolio_value": float(account.portfolio_value),
-                "currency": account.currency,
-                "pattern_day_trader": account.pattern_day_trader,
-                "trading_blocked": account.trading_blocked,
-                "account_blocked": account.account_blocked,
-            }
+            return self._get_account_with_retry()
         except Exception as e:
             logger.error(f"Error fetching account: {e}")
             return {}
 
     @retry_on_connection_error(max_retries=3, base_delay=2.0)
+    def _get_positions_with_retry(self) -> list:
+        """Inner positions fetch — connection errors propagate so the decorator can retry."""
+        positions = self.trading_client.get_all_positions()
+        return [{
+            "symbol": pos.symbol,
+            "qty": float(pos.qty),
+            "side": pos.side.value,
+            "market_value": float(pos.market_value),
+            "cost_basis": float(pos.cost_basis),
+            "unrealized_pl": float(pos.unrealized_pl),
+            "unrealized_plpc": float(pos.unrealized_plpc),
+            "current_price": float(pos.current_price),
+            "avg_entry_price": float(pos.avg_entry_price),
+        } for pos in positions]
+
     def get_positions(self) -> list:
-        """Get all open positions with automatic retry on connection errors."""
+        """Get all open positions. Returns [] on terminal failure (post-retry)."""
         try:
-            positions = self.trading_client.get_all_positions()
-            return [{
-                "symbol": pos.symbol,
-                "qty": float(pos.qty),
-                "side": pos.side.value,
-                "market_value": float(pos.market_value),
-                "cost_basis": float(pos.cost_basis),
-                "unrealized_pl": float(pos.unrealized_pl),
-                "unrealized_plpc": float(pos.unrealized_plpc),
-                "current_price": float(pos.current_price),
-                "avg_entry_price": float(pos.avg_entry_price),
-            } for pos in positions]
+            return self._get_positions_with_retry()
         except Exception as e:
             logger.error(f"Error fetching positions: {e}")
             return []
