@@ -286,6 +286,22 @@ class ShortSqueezeBot:
                 )
 
                 if should_exit:
+                    # Skip if a SELL for this ticker is already pending. Otherwise the
+                    # 1-minute monitor tick will resubmit the same close every minute
+                    # while the prior limit order is still working, which Alpaca
+                    # rejects as "insufficient qty available" once the prior order
+                    # holds the full position.
+                    try:
+                        open_orders = self.broker_trader.get_open_orders(ticker)
+                    except Exception as e:
+                        logger.warning(f"{ticker}: could not fetch open orders ({e}); proceeding")
+                        open_orders = []
+                    pending_sells = [o for o in open_orders if o.get("side", "").lower() == "sell"]
+                    if pending_sells:
+                        ids = ", ".join(o.get("id", "?") for o in pending_sells)
+                        logger.debug(f"{ticker}: SELL already pending ({ids}); skipping monitor exit")
+                        continue
+
                     logger.info(f"Exit signal for {ticker}: {reason}")
                     self.trade_manager.execute_exit(ticker, reason=reason)
 

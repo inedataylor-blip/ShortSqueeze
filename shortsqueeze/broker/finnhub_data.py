@@ -165,6 +165,16 @@ class FinnhubDataClient:
         candles = self.get_candles(symbol, resolution="D", from_ts=from_ts, to_ts=to_ts)
 
         if candles.empty:
+            # As of 2024 Finnhub withdrew /stock/candle from the free tier for
+            # US equities, so this path is silently dead unless the user is on
+            # a paid plan. Warn once per process so it's visible in the log.
+            if not getattr(FinnhubDataClient, "_candle_warned", False):
+                logger.warning(
+                    "Finnhub /stock/candle returned no data — likely the free "
+                    "tier no longer includes this endpoint for US equities. "
+                    "Falling back to other volume sources."
+                )
+                FinnhubDataClient._candle_warned = True
             return {}
 
         # Calculate 20-day average volume (excluding today)
