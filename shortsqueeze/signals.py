@@ -189,24 +189,40 @@ class SignalDetector:
             # use it to compute current_volume.
             intraday = self.broker_data.get_intraday_bars(ticker, minutes=5, days_back=1)
 
-            # Calculate current day's volume from consolidated sources
+            # Calculate current day's volume from consolidated sources.
+            # Source priority (Jun 2026):
+            #   1. Yahoo 1-min bars aggregated for today (~15min delayed but
+            #      continuous coverage — much more reliable than info["volume"]
+            #      which sometimes returns the prior day's total).
+            #   2. Yahoo info["volume"] (last-resort fallback).
+            #   3. Finnhub /quote+/candle (best-effort; the free tier no longer
+            #      serves /stock/candle for US equities, so this almost never
+            #      contributes — kept for the day Finnhub restores it or the
+            #      user upgrades to a paid tier).
             current_volume = 0
             volume_source = "none"
             finnhub_volume_data = None
 
-            # Primary: Finnhub (real-time, free with API key)
-            if self.finnhub:
+            # Primary: Yahoo 1-min cumulative
+            intraday_volume = self.yahoo.get_today_intraday_volume(ticker)
+            if intraday_volume > 0:
+                current_volume = intraday_volume
+                volume_source = "yahoo_intraday"
+                logger.debug(f"{ticker}: Yahoo 1-min volume={current_volume:,.0f}")
+
+            # Fallback: Yahoo info["volume"]
+            if current_volume == 0 and yahoo_info.get("volume"):
+                current_volume = yahoo_info["volume"]
+                volume_source = "yahoo"
+                logger.debug(f"{ticker}: Using Yahoo info volume={current_volume:,.0f}")
+
+            # Best-effort: Finnhub (currently dead on free tier — see finnhub_data.py)
+            if current_volume == 0 and self.finnhub:
                 finnhub_volume_data = self.finnhub.get_intraday_volume(ticker)
                 if finnhub_volume_data and finnhub_volume_data.get("current_volume", 0) > 0:
                     current_volume = finnhub_volume_data["current_volume"]
                     volume_source = "finnhub"
                     logger.debug(f"{ticker}: Finnhub volume={current_volume:,.0f}")
-
-            # Fallback: Yahoo Finance (delayed ~15min, free, no key needed)
-            if current_volume == 0 and yahoo_info.get("volume"):
-                current_volume = yahoo_info["volume"]
-                volume_source = "yahoo"
-                logger.debug(f"{ticker}: Using Yahoo volume={current_volume:,.0f}")
 
             # Get average volume
             avg_volume = daily_bars["volume"].rolling(20, min_periods=5).mean().iloc[-1]

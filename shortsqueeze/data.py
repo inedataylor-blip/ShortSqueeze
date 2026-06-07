@@ -782,6 +782,23 @@ class YahooFinanceData:
             logger.debug(f"Error fetching stock info for {ticker}: {e}")
             return {"ticker": ticker}
 
+    def get_today_intraday_volume(self, ticker: str) -> int:
+        """Cumulative volume for today from Yahoo 1-minute bars.
+
+        Yahoo 1-minute bars are ~15 minutes delayed but reflect real
+        consolidated trading (unlike Alpaca's free IEX feed or Yahoo's
+        ``info["volume"]``, which can return the prior day's total until
+        enough current-day activity accumulates).
+        """
+        try:
+            hist = yf.Ticker(ticker).history(period="1d", interval="1m")
+            if hist.empty or "Volume" not in hist.columns:
+                return 0
+            return int(hist["Volume"].sum())
+        except Exception as e:
+            logger.debug(f"Error fetching Yahoo 1-min volume for {ticker}: {e}")
+            return 0
+
     def get_historical_data(
         self,
         ticker: str,

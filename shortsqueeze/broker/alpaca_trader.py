@@ -285,7 +285,9 @@ class AlpacaTradeExecutor(BrokerTrader):
                 reason="position_close",
             )
 
-            logger.info(f"Position closed: SELL {order.qty} {ticker}")
+            # Order is submitted, not necessarily filled — the position only
+            # actually closes once Alpaca reports a fill.
+            logger.info(f"Submitted close: SELL {order.qty} {ticker}")
             return trade
 
         except Exception as e:
