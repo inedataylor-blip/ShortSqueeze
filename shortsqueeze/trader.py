@@ -97,34 +97,44 @@ class TradeManager:
         ticker = signal.ticker
         shares = position_size.shares
         entry_price = position_size.entry_price
+        stop_loss_price = position_size.stop_loss_price
+        take_profit_price = position_size.take_profit_1
 
-        # Decide between market and limit order
-        if self.config.trading.use_limit_orders:
-            # Set limit slightly above current price for buy
+        if self.config.trading.use_limit_orders and take_profit_price:
+            # Preferred path: a single bracket order (entry + stop-loss +
+            # take-profit submitted atomically). Submitting the entry and a
+            # standalone opposing stop separately gets rejected by Alpaca as a
+            # "potential wash trade" because the entry order is still open when
+            # the stop is placed. A bracket failure does NOT fall through to a
+            # market order — we don't want to silently convert a limit-intent
+            # entry into a market fill (slippage risk on fast movers).
             limit_offset = entry_price * self.config.trading.limit_offset_pct
             limit_price = entry_price + limit_offset
 
-            trade = self.executor.submit_limit_order(
+            trade = self.executor.submit_bracket_order(
                 ticker=ticker,
                 quantity=shares,
                 limit_price=limit_price,
-                side="buy",
+                stop_loss_price=stop_loss_price,
+                take_profit_price=take_profit_price,
             )
         else:
+            # Market entry (use_limit_orders disabled, or no take-profit target).
+            # The standalone stop is best-effort and may be rejected while the
+            # entry is unfilled; the in-process position monitor is the backstop.
             trade = self.executor.submit_market_order(
                 ticker=ticker,
                 quantity=shares,
                 side="buy",
             )
+            if trade:
+                self._submit_stop_loss(ticker, shares, stop_loss_price)
 
         if trade:
-            trade.stop_loss_price = position_size.stop_loss_price
-            trade.take_profit_price = position_size.take_profit_1
+            trade.stop_loss_price = stop_loss_price
+            trade.take_profit_price = take_profit_price
             trade.signal_strength = signal.signal_strength
             trade.reason = signal.reason
-
-            # Submit stop loss order
-            self._submit_stop_loss(ticker, shares, position_size.stop_loss_price)
 
             # Log trade
             self._log_trade(trade)

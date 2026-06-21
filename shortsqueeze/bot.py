@@ -7,8 +7,6 @@ Handles:
 - Position monitoring
 """
 
-import time
-from datetime import datetime
 from typing import Optional
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -442,43 +440,3 @@ class ShortSqueezeBot:
                 "risk_amount": position_size.risk_amount if position_size else 0,
             } if position_size else None,
         }
-
-
-def run_bot():
-    """Run the bot in the foreground."""
-    import sys
-    from loguru import logger
-
-    # Configure logging
-    logger.remove()
-    logger.add(
-        sys.stderr,
-        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan> - <level>{message}</level>",
-        level="INFO",
-    )
-    logger.add(
-        "logs/bot_{time:YYYY-MM-DD}.log",
-        rotation="16:00",  # Rotate at market close (4 PM ET)
-        retention="30 days",
-        format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function} - {message}",
-        level="DEBUG",
-    )
-
-    config = Config.load()
-    bot = ShortSqueezeBot(config)
-
-    try:
-        bot.start()
-
-        # Keep running
-        while True:
-            time.sleep(1)
-
-    except KeyboardInterrupt:
-        logger.info("Keyboard interrupt received")
-    finally:
-        bot.stop()
-
-
-if __name__ == "__main__":
-    run_bot()
