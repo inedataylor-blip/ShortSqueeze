@@ -7,6 +7,7 @@ Handles:
 - Position monitoring
 """
 
+from datetime import datetime
 from typing import Optional
 
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -16,6 +17,7 @@ from loguru import logger
 
 from .broker import create_data_client, create_trader
 from .config import Config
+from .log_manager import rotate_daily_log
 from .timezone import EASTERN_TZ, is_market_hours, now_eastern
 from .universe import WatchlistManager
 from .signals import SignalDetector, SignalFilter
@@ -49,6 +51,13 @@ class ShortSqueezeBot:
         # Scheduler
         self.scheduler = BackgroundScheduler()
         self._running = False
+
+        # Re-entry cooldown tracking: detect when a position closes (by software
+        # stop OR server-side bracket stop/TP) by diffing held tickers across
+        # position fetches, and record the exit time so _process_signal can block
+        # re-entering a just-stopped-out ticker (e.g. chasing a faded squeeze).
+        self._held_tickers: set[str] = set()
+        self._recent_exits: dict[str, datetime] = {}
 
     def start(self) -> None:
         """Start the trading bot."""
@@ -135,6 +144,15 @@ class ShortSqueezeBot:
             max_instances=1,
         )
 
+        # Daily log rotation - 16:15 ET (~15 min after the 16:00 close, DST-correct).
+        # Renames logs/bot.log to logs/bot_<session-date>.log and starts a fresh file.
+        self.scheduler.add_job(
+            rotate_daily_log,
+            CronTrigger(hour=16, minute=15, timezone=EASTERN_TZ),
+            id="daily_log_rotation",
+            name="Daily Log Rotation",
+        )
+
         logger.info("Jobs scheduled")
 
     def _is_market_hours(self) -> bool:
@@ -157,6 +175,7 @@ class ShortSqueezeBot:
                 return
 
             positions = self.broker_data.get_positions()
+            self._track_position_exits(positions)
             current_position_count = len(positions)
 
             # Check if we can take more positions
@@ -192,6 +211,32 @@ class ShortSqueezeBot:
         except Exception as e:
             logger.error(f"Error during scan: {e}", exc_info=True)
 
+    def _track_position_exits(self, positions: list) -> None:
+        """Record when a held ticker disappears from the position list.
+
+        Catches exits via any path — the software stop in _monitor_positions or a
+        server-side bracket stop/take-profit fill that the bot never logged
+        directly. The recorded timestamp feeds the re-entry cooldown so the bot
+        doesn't immediately re-buy a ticker it was just stopped out of.
+        """
+        current = {p["symbol"].upper() for p in positions}
+        for ticker in self._held_tickers - current:
+            self._recent_exits[ticker] = now_eastern()
+            logger.debug(
+                f"{ticker}: position closed; re-entry cooldown started "
+                f"({self.config.risk.reentry_cooldown_minutes}min)"
+            )
+        self._held_tickers = current
+
+        # Prune stale cooldown entries so the dict can't grow unbounded.
+        cooldown = self.config.risk.reentry_cooldown_minutes
+        now_et = now_eastern()
+        self._recent_exits = {
+            t: ts
+            for t, ts in self._recent_exits.items()
+            if (now_et - ts).total_seconds() / 60 < cooldown
+        }
+
     def _process_signal(
         self,
         signal,
@@ -222,6 +267,19 @@ class ShortSqueezeBot:
             order_ids = ", ".join(o.get("id", "?") for o in pending_buys)
             logger.info(f"Skipping {ticker}: pending BUY order(s) already open ({order_ids})")
             return
+
+        # Re-entry cooldown: don't immediately re-buy a ticker we were just
+        # stopped out of (e.g. chasing a faded extreme-mover back down).
+        last_exit = self._recent_exits.get(ticker.upper())
+        if last_exit is not None:
+            elapsed_min = (now_eastern() - last_exit).total_seconds() / 60
+            cooldown = self.config.risk.reentry_cooldown_minutes
+            if elapsed_min < cooldown:
+                logger.info(
+                    f"Skipping {ticker}: in re-entry cooldown "
+                    f"({elapsed_min:.0f}/{cooldown}min since exit)"
+                )
+                return
 
         # Calculate position size
         position_size = self.position_sizer.calculate_position_size(
@@ -265,6 +323,7 @@ class ShortSqueezeBot:
 
         try:
             positions = self.broker_data.get_positions()
+            self._track_position_exits(positions)
 
             if not positions:
                 return
