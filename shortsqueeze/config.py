@@ -80,6 +80,9 @@ class RiskConfig:
     # Minimum position thresholds to avoid tiny positions
     min_position_value: float = 500.0  # Minimum $500 position value
     min_shares: int = 10  # Minimum 10 shares per position
+    # Block re-entering a ticker for this many minutes after its position closes
+    # (e.g. a stop-out), so the bot doesn't chase a faded mover back down.
+    reentry_cooldown_minutes: int = 60
 
 
 @dataclass

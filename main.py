@@ -14,73 +14,18 @@ Usage:
 """
 
 import argparse
-import sys
 import json
 from datetime import datetime
 
 from loguru import logger
 
 from shortsqueeze import Config, ShortSqueezeBot
-from shortsqueeze.timezone import LOCAL_TZ, now_eastern
-
-
-def _stamp_arizona_time(record) -> None:
-    """Stash the Arizona-time (MST, no DST) timestamp on the record for formatting."""
-    record["extra"]["az_time"] = (
-        record["time"].astimezone(LOCAL_TZ).strftime("%Y-%m-%d %H:%M:%S")
-    )
-
-
-class _MarketCloseRotation:
-    """Rotate the log once per day shortly after the 16:00 ET market close.
-
-    Uses Eastern time (via ``now_eastern``) so the rotation tracks the actual
-    market close across EST/EDT regardless of the server's local timezone. A
-    15-minute buffer past the close ensures any 16:00-16:05 exit/monitor
-    activity lands in the correct day's file before it is archived.
-    """
-
-    def __init__(self):
-        self._last_rotated = None
-
-    def __call__(self, message, file) -> bool:
-        now_et = now_eastern()
-        cutoff = now_et.replace(hour=16, minute=15, second=0, microsecond=0)
-        if now_et >= cutoff and self._last_rotated != now_et.date():
-            self._last_rotated = now_et.date()
-            return True
-        return False
+from shortsqueeze.log_manager import configure_logging
 
 
 def setup_logging(level: str = "INFO") -> None:
-    """Configure logging with Arizona timezone and daily market-close rotation.
-
-    The format callables return a loguru *template* containing the ``{message}``
-    placeholder rather than interpolating the message text directly, so log
-    messages that contain literal braces (e.g. ``{'class': 'screener_table'}``)
-    do not raise ``KeyError`` inside the handler.
-    """
-    logger.remove()
-
-    def console_format(record) -> str:
-        _stamp_arizona_time(record)
-        return (
-            "<green>{extra[az_time]}</green> | "
-            "<level>{level: <8}</level> | <level>{message}</level>\n"
-        )
-
-    def file_format(record) -> str:
-        _stamp_arizona_time(record)
-        return "{extra[az_time]} | {level: <8} | {name}:{function} - {message}\n"
-
-    logger.add(sys.stderr, format=console_format, level=level)
-    logger.add(
-        "logs/bot.log",
-        rotation=_MarketCloseRotation(),  # one file per trading day, archived ~16:15 ET
-        retention="30 days",
-        format=file_format,
-        level="DEBUG",
-    )
+    """Configure console + daily-rotating file logging (see log_manager)."""
+    configure_logging(level)
 
 
 def run_bot(config: Config) -> None:
