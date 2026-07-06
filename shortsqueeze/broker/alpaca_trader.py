@@ -168,7 +168,11 @@ class AlpacaTradeExecutor(BrokerTrader):
                 symbol=ticker,
                 qty=quantity,
                 side=OrderSide.BUY,
-                time_in_force=TimeInForce.DAY,
+                # GTC so the SL/TP legs survive overnight on multi-day holds
+                # (DAY legs expire at the close, leaving the position naked).
+                # The bot cancels unfilled BUY parents just before the close so
+                # a stale entry can't fill on a next-day gap-down.
+                time_in_force=TimeInForce.GTC,
                 limit_price=round(limit_price, 2),
                 order_class="bracket",
                 stop_loss={"stop_price": round(stop_loss_price, 2)},

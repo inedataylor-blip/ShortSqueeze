@@ -98,7 +98,10 @@ class TradeManager:
         shares = position_size.shares
         entry_price = position_size.entry_price
         stop_loss_price = position_size.stop_loss_price
-        take_profit_price = position_size.take_profit_1
+        # Bracket TP at 3R (take_profit_2). A 1.5R cap forfeits the +30% tail
+        # winners that historically carried the strategy; the trailing stop in
+        # the position monitor harvests gains between here and there.
+        take_profit_price = position_size.take_profit_2
 
         if self.config.trading.use_limit_orders and take_profit_price:
             # Preferred path: a single bracket order (entry + stop-loss +
