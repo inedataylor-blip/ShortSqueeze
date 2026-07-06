@@ -83,6 +83,9 @@ class RiskConfig:
     # Block re-entering a ticker for this many minutes after its position closes
     # (e.g. a stop-out), so the bot doesn't chase a faded mover back down.
     reentry_cooldown_minutes: int = 60
+    # Force-exit positions held this many days without resolving: a squeeze
+    # thesis decays in days, and stale positions deadlock the position slots.
+    max_hold_days: int = 5
 
 
 @dataclass

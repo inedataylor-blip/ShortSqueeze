@@ -52,12 +52,22 @@ class ShortSqueezeBot:
         self.scheduler = BackgroundScheduler()
         self._running = False
 
-        # Re-entry cooldown tracking: detect when a position closes (by software
-        # stop OR server-side bracket stop/TP) by diffing held tickers across
-        # position fetches, and record the exit time so _process_signal can block
-        # re-entering a just-stopped-out ticker (e.g. chasing a faded squeeze).
+        # Position tracking, updated on every get_positions() fetch by
+        # _update_position_tracking:
+        # - _held_tickers/_recent_exits: diff-based exit detection (catches
+        #   server-side bracket fills the bot never logs) feeding the re-entry
+        #   cooldown in _process_signal.
+        # - _position_highs: per-ticker high-water mark so the trailing stop in
+        #   should_exit_position has a real "highest_price" to trail from.
+        # - _position_first_seen: when a ticker first appeared, feeding the
+        #   max-hold-time exit.
+        # In-memory only: highs and hold clocks reset on bot restart (re-seeded
+        # from the current price / restart time), which is acceptable drift.
         self._held_tickers: set[str] = set()
         self._recent_exits: dict[str, datetime] = {}
+        self._position_highs: dict[str, float] = {}
+        self._position_first_seen: dict[str, datetime] = {}
+        self._last_portfolio_log: Optional[datetime] = None
 
     def start(self) -> None:
         """Start the trading bot."""
@@ -153,6 +163,16 @@ class ShortSqueezeBot:
             name="Daily Log Rotation",
         )
 
+        # End-of-day order cleanup - 15:58 ET, just before the close. Cancels
+        # unfilled BUY limits so GTC bracket entries can't fill on a next-day
+        # gap-down at a stale price.
+        self.scheduler.add_job(
+            self._cancel_stale_buy_orders,
+            CronTrigger(hour=15, minute=58, timezone=EASTERN_TZ),
+            id="eod_order_cleanup",
+            name="EOD Order Cleanup",
+        )
+
         logger.info("Jobs scheduled")
 
     def _is_market_hours(self) -> bool:
@@ -175,7 +195,7 @@ class ShortSqueezeBot:
                 return
 
             positions = self.broker_data.get_positions()
-            self._track_position_exits(positions)
+            self._update_position_tracking(positions)
             current_position_count = len(positions)
 
             # Check if we can take more positions
@@ -211,31 +231,98 @@ class ShortSqueezeBot:
         except Exception as e:
             logger.error(f"Error during scan: {e}", exc_info=True)
 
-    def _track_position_exits(self, positions: list) -> None:
-        """Record when a held ticker disappears from the position list.
+    def _update_position_tracking(self, positions: list) -> None:
+        """Refresh per-ticker tracking state from a position fetch.
 
-        Catches exits via any path — the software stop in _monitor_positions or a
-        server-side bracket stop/take-profit fill that the bot never logged
-        directly. The recorded timestamp feeds the re-entry cooldown so the bot
-        doesn't immediately re-buy a ticker it was just stopped out of.
+        - Exits (ticker disappeared): stamp the re-entry cooldown. Catches exits
+          via any path — the software stop in _monitor_positions or a server-side
+          bracket stop/take-profit fill that the bot never logged directly.
+        - Entries (ticker appeared): start the max-hold clock.
+        - Held: update the high-water mark that the trailing stop trails from.
         """
+        now_et = now_eastern()
         current = {p["symbol"].upper() for p in positions}
+
         for ticker in self._held_tickers - current:
-            self._recent_exits[ticker] = now_eastern()
+            self._recent_exits[ticker] = now_et
+            self._position_highs.pop(ticker, None)
+            self._position_first_seen.pop(ticker, None)
             logger.debug(
                 f"{ticker}: position closed; re-entry cooldown started "
                 f"({self.config.risk.reentry_cooldown_minutes}min)"
             )
+
+        for p in positions:
+            ticker = p["symbol"].upper()
+            price = p.get("current_price", 0) or 0
+            if ticker not in self._held_tickers:
+                self._position_first_seen.setdefault(ticker, now_et)
+            if price > 0:
+                self._position_highs[ticker] = max(
+                    self._position_highs.get(ticker, 0), price
+                )
+
         self._held_tickers = current
 
         # Prune stale cooldown entries so the dict can't grow unbounded.
         cooldown = self.config.risk.reentry_cooldown_minutes
-        now_et = now_eastern()
         self._recent_exits = {
             t: ts
             for t, ts in self._recent_exits.items()
             if (now_et - ts).total_seconds() / 60 < cooldown
         }
+
+    def _log_portfolio_snapshot(self, positions: list) -> None:
+        """Log held positions (P&L, age) at most once per hour.
+
+        Without this, a week where every scan is skipped at max positions leaves
+        no trace of WHICH tickers are occupying the slots.
+        """
+        now_et = now_eastern()
+        if (
+            self._last_portfolio_log is not None
+            and (now_et - self._last_portfolio_log).total_seconds() < 3600
+        ):
+            return
+        self._last_portfolio_log = now_et
+
+        parts = []
+        for p in positions:
+            ticker = p["symbol"].upper()
+            plpc = p.get("unrealized_plpc", 0) * 100
+            first_seen = self._position_first_seen.get(ticker)
+            age = f"{(now_et - first_seen).days}d" if first_seen else "?d"
+            parts.append(f"{ticker} {plpc:+.1f}% ({age})")
+
+        logger.info(
+            f"Portfolio {len(positions)}/{self.config.risk.max_positions}: "
+            + " | ".join(parts)
+        )
+
+    def _cancel_stale_buy_orders(self) -> None:
+        """Cancel unfilled BUY orders near the close.
+
+        Bracket orders are GTC so their SL/TP legs survive overnight, but that
+        also lets an unfilled entry limit persist — a stale BUY at yesterday's
+        price could fill on a gap-down. Cancelling the parent of an unfilled
+        bracket cancels its inactive children; SELL legs of filled positions are
+        untouched.
+        """
+        try:
+            open_orders = self.broker_trader.get_open_orders()
+        except Exception as e:
+            logger.warning(f"EOD order cleanup: could not fetch open orders ({e})")
+            return
+
+        for order in open_orders:
+            if order.get("side", "").lower() != "buy":
+                continue
+            order_id = order.get("id", "")
+            if self.broker_trader.cancel_order(order_id):
+                logger.info(
+                    f"EOD order cleanup: cancelled unfilled BUY "
+                    f"{order.get('symbol', '?')} (order {order_id})"
+                )
 
     def _process_signal(
         self,
@@ -323,15 +410,24 @@ class ShortSqueezeBot:
 
         try:
             positions = self.broker_data.get_positions()
-            self._track_position_exits(positions)
+            self._update_position_tracking(positions)
 
             if not positions:
                 return
+
+            self._log_portfolio_snapshot(positions)
 
             for position in positions:
                 ticker = position["symbol"]
                 current_price = position["current_price"]
                 entry_price = position["avg_entry_price"]
+
+                # Supply the tracked high-water mark so the trailing stop has a
+                # real high to trail from (Alpaca's position payload has no such
+                # field; without this the trailing stop can never fire).
+                position["highest_price"] = self._position_highs.get(
+                    ticker.upper(), current_price
+                )
 
                 # Check exit conditions
                 should_exit, reason = self.risk_manager.should_exit_position(
@@ -341,6 +437,16 @@ class ShortSqueezeBot:
                     stop_loss_pct=self.config.risk.default_stop_loss_pct,
                     trailing_stop_pct=self.config.risk.trailing_stop_pct,
                 )
+
+                # Max-hold-time exit: a squeeze that hasn't resolved in
+                # max_hold_days is dead money blocking one of the position
+                # slots (a full week of "Max positions reached" lockout).
+                if not should_exit:
+                    first_seen = self._position_first_seen.get(ticker.upper())
+                    max_days = self.config.risk.max_hold_days
+                    if first_seen is not None and (now_eastern() - first_seen).days >= max_days:
+                        should_exit = True
+                        reason = f"Max hold time ({max_days}d) reached"
 
                 if should_exit:
                     # Skip if a SELL for this ticker is already pending. Otherwise the
