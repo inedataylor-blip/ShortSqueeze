@@ -1,0 +1,983 @@
+2026-07-01 13:15:00 | INFO     | shortsqueeze.log_manager:rotate_daily_log - Rotated daily log -> bot_2026-07-01.log
+2026-07-01 13:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 13:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 13:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 13:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 13:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 13:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 13:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 13:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 13:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 14:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 15:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 16:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 17:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 18:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 19:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 20:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 21:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 22:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-01 23:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 00:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 01:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 02:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:00:00 | INFO     | shortsqueeze.bot:_refresh_watchlist - Refreshing watchlist...
+2026-07-02 03:00:00 | INFO     | shortsqueeze.universe:refresh_watchlist - Refreshing watchlists from data sources...
+2026-07-02 03:00:00 | INFO     | shortsqueeze.data:get_squeeze_candidates - Fetching from finvizfinance package...
+2026-07-02 03:00:00 | INFO     | shortsqueeze.data:get_high_short_interest_stocks - Fetching high short interest stocks via finvizfinance...
+2026-07-02 03:00:04 | INFO     | shortsqueeze.data:get_high_short_interest_stocks - finvizfinance found 65 high short interest stocks
+2026-07-02 03:00:04 | INFO     | shortsqueeze.data:get_squeeze_candidates - finvizfinance found 65 candidates
+2026-07-02 03:00:04 | INFO     | shortsqueeze.data:get_squeeze_candidates - Fetching from manual Finviz scraper...
+2026-07-02 03:00:04 | INFO     | shortsqueeze.data:get_high_short_interest_stocks - Scraping Finviz for high short interest stocks...
+2026-07-02 03:00:05 | DEBUG    | shortsqueeze.data:get_high_short_interest_stocks - Fetched page 1, status: 200
+2026-07-02 03:00:05 | DEBUG    | shortsqueeze.data:get_high_short_interest_stocks - Found table with selector: {'class': 'screener_table'}
+2026-07-02 03:00:05 | DEBUG    | shortsqueeze.data:get_high_short_interest_stocks - Page 1: Found 0 stocks
+2026-07-02 03:00:05 | INFO     | shortsqueeze.data:get_high_short_interest_stocks - Found 0 stocks from Finviz with short float > 20%
+2026-07-02 03:00:05 | INFO     | shortsqueeze.data:get_squeeze_candidates - Fetching from highshortinterest.com...
+2026-07-02 03:00:05 | INFO     | shortsqueeze.data:get_high_short_interest_stocks - Scraping highshortinterest.com for high short interest stocks...
+2026-07-02 03:00:06 | INFO     | shortsqueeze.data:get_high_short_interest_stocks - highshortinterest.com found 100 stocks
+2026-07-02 03:00:06 | INFO     | shortsqueeze.data:get_squeeze_candidates - highshortinterest.com found 100 candidates
+2026-07-02 03:00:06 | INFO     | shortsqueeze.data:get_squeeze_candidates - Fetching SEC Fail-to-Deliver data...
+2026-07-02 03:00:06 | INFO     | shortsqueeze.data:get_high_ftd_stocks - Fetching SEC Fail-to-Deliver data...
+2026-07-02 03:00:06 | DEBUG    | shortsqueeze.data:_download_latest_ftd - Trying SEC FTD file: cnsfails202607b.zip
+2026-07-02 03:00:06 | DEBUG    | shortsqueeze.data:_download_latest_ftd - Trying SEC FTD file: cnsfails202607a.zip
+2026-07-02 03:00:07 | DEBUG    | shortsqueeze.data:_download_latest_ftd - Trying SEC FTD file: cnsfails202606b.zip
+2026-07-02 03:00:07 | DEBUG    | shortsqueeze.data:_download_latest_ftd - Trying SEC FTD file: cnsfails202606a.zip
+2026-07-02 03:00:08 | INFO     | shortsqueeze.data:_download_latest_ftd - Downloaded SEC FTD file: cnsfails202606a.zip
+2026-07-02 03:00:08 | INFO     | shortsqueeze.data:_parse_ftd_zip - Parsed 5077 FTD records from cnsfails202606a.txt
+2026-07-02 03:00:08 | INFO     | shortsqueeze.data:get_high_ftd_stocks - SEC FTD data: 657 stocks with significant fail-to-deliver counts
+2026-07-02 03:00:08 | INFO     | shortsqueeze.data:get_squeeze_candidates - SEC FTD data found 657 stocks with high fail-to-deliver counts
+2026-07-02 03:00:08 | INFO     | shortsqueeze.data:get_squeeze_candidates - Combined 729 unique candidates from 3/4 sources
+2026-07-02 03:00:09 | DEBUG    | shortsqueeze.data:_verify_one - ABR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:10 | DEBUG    | shortsqueeze.data:_verify_one - CNXC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:10 | DEBUG    | shortsqueeze.data:_verify_one - CRMD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:12 | DEBUG    | shortsqueeze.data:_verify_one - MRLN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:12 | DEBUG    | shortsqueeze.data:_verify_one - OMDA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:13 | DEBUG    | shortsqueeze.data:_verify_one - PGY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:13 | DEBUG    | shortsqueeze.data:_verify_one - POET: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:14 | DEBUG    | shortsqueeze.data:_verify_one - SVRA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:15 | DEBUG    | shortsqueeze.data:_verify_one - VOR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:18 | DEBUG    | shortsqueeze.data:_verify_one - ZCMD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:19 | DEBUG    | shortsqueeze.data:_verify_one - NCRA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:19 | DEBUG    | shortsqueeze.data:_verify_one - PMI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:19 | DEBUG    | shortsqueeze.data:_verify_one - MSTU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:19 | DEBUG    | shortsqueeze.data:_verify_one - IONZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:19 | DEBUG    | shortsqueeze.data:_verify_one - RGTZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:19 | DEBUG    | shortsqueeze.data:_verify_one - IALT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:20 | DEBUG    | shortsqueeze.data:_verify_one - CYDY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:20 | DEBUG    | shortsqueeze.data:_verify_one - NOTV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:20 | DEBUG    | shortsqueeze.data:_verify_one - SBEV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:20 | DEBUG    | shortsqueeze.data:_verify_one - RZLV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:20 | DEBUG    | shortsqueeze.data:_verify_one - CXAI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:20 | DEBUG    | shortsqueeze.data:_verify_one - CBIH: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:20 | DEBUG    | shortsqueeze.data:_verify_one - NTCL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:21 | DEBUG    | shortsqueeze.data:_verify_one - SPDN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:21 | DEBUG    | shortsqueeze.data:_verify_one - TSLL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:21 | DEBUG    | shortsqueeze.data:_verify_one - NUWE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:21 | DEBUG    | shortsqueeze.data:_verify_one - MSTX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:21 | DEBUG    | shortsqueeze.data:_verify_one - SOAR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:21 | DEBUG    | shortsqueeze.data:_verify_one - IRE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:21 | DEBUG    | shortsqueeze.data:_verify_one - OKLL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:22 | DEBUG    | shortsqueeze.data:_verify_one - QBTZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:22 | DEBUG    | shortsqueeze.data:_verify_one - DEVS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:22 | DEBUG    | shortsqueeze.data:_verify_one - SPWR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:22 | DEBUG    | shortsqueeze.data:_verify_one - SRXH: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:22 | DEBUG    | shortsqueeze.data:_verify_one - WIT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:22 | DEBUG    | shortsqueeze.data:_verify_one - RKLZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:22 | DEBUG    | shortsqueeze.data:_verify_one - BMNU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:22 | DEBUG    | shortsqueeze.data:_verify_one - NOWL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:23 | DEBUG    | shortsqueeze.data:_verify_one - ASTN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:23 | DEBUG    | shortsqueeze.data:_verify_one - SIXD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:23 | DEBUG    | shortsqueeze.data:_verify_one - LAES: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:23 | DEBUG    | shortsqueeze.data:_verify_one - CYATY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:23 | DEBUG    | shortsqueeze.data:_verify_one - MEHA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:23 | DEBUG    | shortsqueeze.data:_verify_one - LASE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:23 | DEBUG    | shortsqueeze.data:_verify_one - OCTV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:24 | DEBUG    | shortsqueeze.data:_verify_one - CAIIU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:24 | DEBUG    | shortsqueeze.data:_verify_one - SMTK: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:24 | DEBUG    | shortsqueeze.data:_verify_one - DVLT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:24 | DEBUG    | shortsqueeze.data:_verify_one - TZA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:24 | DEBUG    | shortsqueeze.data:_verify_one - DXF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:24 | DEBUG    | shortsqueeze.data:_verify_one - INFY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:24 | DEBUG    | shortsqueeze.data:_verify_one - ADCT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:24 | DEBUG    | shortsqueeze.data:_verify_one - SQQQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:25 | DEBUG    | shortsqueeze.data:_verify_one - MNTS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:25 | DEBUG    | shortsqueeze.data:_verify_one - SNXX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:25 | DEBUG    | shortsqueeze.data:_verify_one - CBDW: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:25 | DEBUG    | shortsqueeze.data:_verify_one - GBTG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:25 | DEBUG    | shortsqueeze.data:_verify_one - GGOV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:25 | DEBUG    | shortsqueeze.data:_verify_one - FFAI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:26 | DEBUG    | shortsqueeze.data:_verify_one - KEEL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:26 | DEBUG    | shortsqueeze.data:_verify_one - CHKMF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:26 | DEBUG    | shortsqueeze.data:_verify_one - GOSS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:26 | DEBUG    | shortsqueeze.data:_verify_one - ZONE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:26 | DEBUG    | shortsqueeze.data:_verify_one - GMEX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:26 | DEBUG    | shortsqueeze.data:_verify_one - NVD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:26 | DEBUG    | shortsqueeze.data:_verify_one - QTEX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:27 | DEBUG    | shortsqueeze.data:_verify_one - CBDL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:27 | DEBUG    | shortsqueeze.data:_verify_one - PSRHF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:27 | DEBUG    | shortsqueeze.data:_verify_one - AMC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:27 | DEBUG    | shortsqueeze.data:_verify_one - NEOV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:27 | DEBUG    | shortsqueeze.data:_verify_one - SNDQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:27 | DEBUG    | shortsqueeze.data:_verify_one - ADBG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:28 | DEBUG    | shortsqueeze.data:_verify_one - IDEF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:28 | DEBUG    | shortsqueeze.data:_verify_one - AMZE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:28 | DEBUG    | shortsqueeze.data:_verify_one - SOXL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:28 | DEBUG    | shortsqueeze.data:_verify_one - CPOP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:28 | DEBUG    | shortsqueeze.data:_verify_one - INIO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:28 | DEBUG    | shortsqueeze.data:_verify_one - PUSA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:28 | DEBUG    | shortsqueeze.data:_verify_one - CHAI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:29 | DEBUG    | shortsqueeze.data:_verify_one - ONDL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:29 | DEBUG    | shortsqueeze.data:_verify_one - CREG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:29 | DEBUG    | shortsqueeze.data:_verify_one - CONL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:29 | DEBUG    | shortsqueeze.data:_verify_one - NGCG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:29 | DEBUG    | shortsqueeze.data:_verify_one - CDT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:29 | DEBUG    | shortsqueeze.data:_verify_one - DRAM: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:29 | DEBUG    | shortsqueeze.data:_verify_one - DBGI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:29 | DEBUG    | shortsqueeze.data:_verify_one - DAMD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:30 | DEBUG    | shortsqueeze.data:_verify_one - HYG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:30 | DEBUG    | shortsqueeze.data:_verify_one - USAR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:30 | DEBUG    | shortsqueeze.data:_verify_one - RGBP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:30 | DEBUG    | shortsqueeze.data:_verify_one - HIVE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:30 | DEBUG    | shortsqueeze.data:_verify_one - LQD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:30 | DEBUG    | shortsqueeze.data:_verify_one - SMCZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:30 | DEBUG    | shortsqueeze.data:_verify_one - PDBC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:30 | DEBUG    | shortsqueeze.data:_verify_one - CGAC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:31 | DEBUG    | shortsqueeze.data:_verify_one - CCUP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:31 | DEBUG    | shortsqueeze.data:_verify_one - SOXX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:31 | DEBUG    | shortsqueeze.data:_verify_one - CGIC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:31 | DEBUG    | shortsqueeze.data:_verify_one - BITX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:31 | DEBUG    | shortsqueeze.data:_verify_one - FXI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:31 | DEBUG    | shortsqueeze.data:_verify_one - RMSG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:32 | DEBUG    | shortsqueeze.data:_verify_one - IPSC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:32 | DEBUG    | shortsqueeze.data:_verify_one - XLE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:32 | DEBUG    | shortsqueeze.data:_verify_one - VRNO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:32 | DEBUG    | shortsqueeze.data:_verify_one - SCAG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:32 | DEBUG    | shortsqueeze.data:_verify_one - GGLS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:32 | DEBUG    | shortsqueeze.data:_verify_one - GNS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:32 | DEBUG    | shortsqueeze.data:_verify_one - OHACR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:32 | DEBUG    | shortsqueeze.data:_verify_one - KRE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:33 | DEBUG    | shortsqueeze.data:_verify_one - BULZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:33 | DEBUG    | shortsqueeze.data:_verify_one - DDFZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:33 | DEBUG    | shortsqueeze.data:_verify_one - WOLF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:33 | DEBUG    | shortsqueeze.data:_verify_one - SNGX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:33 | DEBUG    | shortsqueeze.data:_verify_one - GDC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:33 | DEBUG    | shortsqueeze.data:_verify_one - SOXS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:33 | DEBUG    | shortsqueeze.data:_verify_one - SAN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:34 | DEBUG    | shortsqueeze.data:_verify_one - AADX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:34 | DEBUG    | shortsqueeze.data:_verify_one - IBX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:34 | DEBUG    | shortsqueeze.data:_verify_one - ANY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:34 | DEBUG    | shortsqueeze.data:_verify_one - AIM: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:34 | DEBUG    | shortsqueeze.data:_verify_one - EWJ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:34 | DEBUG    | shortsqueeze.data:_verify_one - XBI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:34 | DEBUG    | shortsqueeze.data:_verify_one - EWU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:34 | DEBUG    | shortsqueeze.data:_verify_one - EWA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:35 | DEBUG    | shortsqueeze.data:_verify_one - VEOEY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:35 | DEBUG    | shortsqueeze.data:_verify_one - USO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:35 | DEBUG    | shortsqueeze.data:_verify_one - RGTX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:35 | DEBUG    | shortsqueeze.data:_verify_one - MSTZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:35 | DEBUG    | shortsqueeze.data:_verify_one - PSZKY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:35 | DEBUG    | shortsqueeze.data:_verify_one - SMCI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:35 | DEBUG    | shortsqueeze.data:_verify_one - AVGX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:35 | DEBUG    | shortsqueeze.data:_verify_one - RKLX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:36 | DEBUG    | shortsqueeze.data:_verify_one - AIBT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:36 | DEBUG    | shortsqueeze.data:_verify_one - YMT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:36 | DEBUG    | shortsqueeze.data:_verify_one - INND: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:36 | DEBUG    | shortsqueeze.data:_verify_one - STI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:36 | DEBUG    | shortsqueeze.data:_verify_one - KDK: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:36 | DEBUG    | shortsqueeze.data:_verify_one - FTGC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:36 | DEBUG    | shortsqueeze.data:_verify_one - ASTX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:37 | DEBUG    | shortsqueeze.data:_verify_one - ESGE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:37 | DEBUG    | shortsqueeze.data:_verify_one - TLT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:37 | DEBUG    | shortsqueeze.data:_verify_one - DDTZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:37 | DEBUG    | shortsqueeze.data:_verify_one - CRPHY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:37 | DEBUG    | shortsqueeze.data:_verify_one - AMTFF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:37 | DEBUG    | shortsqueeze.data:_verify_one - XOS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:37 | DEBUG    | shortsqueeze.data:_verify_one - FJET: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:37 | DEBUG    | shortsqueeze.data:_verify_one - XRT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:38 | DEBUG    | shortsqueeze.data:_verify_one - SVIX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:38 | DEBUG    | shortsqueeze.data:_verify_one - MVIS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:38 | DEBUG    | shortsqueeze.data:_verify_one - SAFX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:38 | DEBUG    | shortsqueeze.data:_verify_one - CDE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:38 | DEBUG    | shortsqueeze.data:_verify_one - SELX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:38 | DEBUG    | shortsqueeze.data:_verify_one - STLA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:38 | DEBUG    | shortsqueeze.data:_verify_one - FEED: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:38 | DEBUG    | shortsqueeze.data:_verify_one - SPPL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:39 | DEBUG    | shortsqueeze.data:_verify_one - MVLL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:39 | DEBUG    | shortsqueeze.data:_verify_one - HYZN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:39 | DEBUG    | shortsqueeze.data:_verify_one - TQQQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:39 | DEBUG    | shortsqueeze.data:_verify_one - MCHI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:39 | DEBUG    | shortsqueeze.data:_verify_one - BTCZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:40 | DEBUG    | shortsqueeze.data:_verify_one - XLF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:40 | DEBUG    | shortsqueeze.data:_verify_one - BJDX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:40 | DEBUG    | shortsqueeze.data:_verify_one - MEDH: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:40 | DEBUG    | shortsqueeze.data:_verify_one - PBRA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:40 | DEBUG    | shortsqueeze.data:_verify_one - IDVZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:40 | DEBUG    | shortsqueeze.data:_verify_one - BMNG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:40 | DEBUG    | shortsqueeze.data:_verify_one - SMU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:41 | DEBUG    | shortsqueeze.data:_verify_one - IAUX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:41 | DEBUG    | shortsqueeze.data:_verify_one - ERIC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:41 | DEBUG    | shortsqueeze.data:_verify_one - DSS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:41 | DEBUG    | shortsqueeze.data:_verify_one - GNTA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:41 | DEBUG    | shortsqueeze.data:_verify_one - NEXR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:41 | DEBUG    | shortsqueeze.data:_verify_one - KVUE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:41 | DEBUG    | shortsqueeze.data:_verify_one - TECS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:42 | DEBUG    | shortsqueeze.data:_verify_one - NRGV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:42 | DEBUG    | shortsqueeze.data:_verify_one - ABEV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:42 | DEBUG    | shortsqueeze.data:_verify_one - BB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:42 | DEBUG    | shortsqueeze.data:_verify_one - OTLK: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:42 | DEBUG    | shortsqueeze.data:_verify_one - CNYA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:42 | DEBUG    | shortsqueeze.data:_verify_one - ASTC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:42 | DEBUG    | shortsqueeze.data:_verify_one - CBRG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:42 | DEBUG    | shortsqueeze.data:_verify_one - BHP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:43 | DEBUG    | shortsqueeze.data:_verify_one - TGHL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:43 | DEBUG    | shortsqueeze.data:_verify_one - TSLG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:43 | DEBUG    | shortsqueeze.data:_verify_one - FOXX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:43 | DEBUG    | shortsqueeze.data:_verify_one - FXE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:43 | DEBUG    | shortsqueeze.data:_verify_one - DFNS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:43 | DEBUG    | shortsqueeze.data:_verify_one - NAMM: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:43 | DEBUG    | shortsqueeze.data:_verify_one - VIVK: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:44 | DEBUG    | shortsqueeze.data:_verify_one - DGACU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:44 | DEBUG    | shortsqueeze.data:_verify_one - LITX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:44 | DEBUG    | shortsqueeze.data:_verify_one - CCTG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:44 | DEBUG    | shortsqueeze.data:_verify_one - ALLIF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:44 | DEBUG    | shortsqueeze.data:_verify_one - CRMG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:44 | DEBUG    | shortsqueeze.data:_verify_one - JZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:45 | DEBUG    | shortsqueeze.data:_verify_one - KLAR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:45 | DEBUG    | shortsqueeze.data:_verify_one - FENI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:45 | DEBUG    | shortsqueeze.data:_verify_one - HFXI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:45 | DEBUG    | shortsqueeze.data:_verify_one - BKLN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:45 | DEBUG    | shortsqueeze.data:_verify_one - SMCX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:45 | DEBUG    | shortsqueeze.data:_verify_one - LRLCY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:45 | DEBUG    | shortsqueeze.data:_verify_one - CIFR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:45 | DEBUG    | shortsqueeze.data:_verify_one - AVL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:46 | DEBUG    | shortsqueeze.data:_verify_one - ISTB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:46 | DEBUG    | shortsqueeze.data:_verify_one - ETHA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:46 | DEBUG    | shortsqueeze.data:_verify_one - MOBX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:46 | DEBUG    | shortsqueeze.data:_verify_one - CIG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:46 | DEBUG    | shortsqueeze.data:_verify_one - HCWC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:46 | DEBUG    | shortsqueeze.data:_verify_one - TWAV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:48 | DEBUG    | shortsqueeze.data:_verify_one - NJUN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:48 | DEBUG    | shortsqueeze.data:get_stock_info - Error fetching stock info for BCSSU: HTTP Error 404: 
+2026-07-02 03:00:48 | DEBUG    | shortsqueeze.data:_verify_one - BCSSU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:48 | DEBUG    | shortsqueeze.data:_verify_one - DNN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:48 | DEBUG    | shortsqueeze.data:_verify_one - ARRNF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:48 | DEBUG    | shortsqueeze.data:_verify_one - EEM: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:48 | DEBUG    | shortsqueeze.data:_verify_one - DRIP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:48 | DEBUG    | shortsqueeze.data:_verify_one - PRZO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:48 | DEBUG    | shortsqueeze.data:_verify_one - KBLB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:48 | DEBUG    | shortsqueeze.data:_verify_one - QID: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:48 | DEBUG    | shortsqueeze.data:_verify_one - AAOX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:49 | DEBUG    | shortsqueeze.data:_verify_one - AIIO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:49 | DEBUG    | shortsqueeze.data:_verify_one - SNAP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:49 | DEBUG    | shortsqueeze.data:_verify_one - NVDQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:49 | DEBUG    | shortsqueeze.data:_verify_one - ARCC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:49 | DEBUG    | shortsqueeze.data:_verify_one - YSS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:49 | DEBUG    | shortsqueeze.data:_verify_one - PLU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:49 | DEBUG    | shortsqueeze.data:_verify_one - ABVEF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:49 | DEBUG    | shortsqueeze.data:_verify_one - BMNZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:49 | DEBUG    | shortsqueeze.data:_verify_one - POEL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:49 | DEBUG    | shortsqueeze.data:_verify_one - SUSB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:49 | DEBUG    | shortsqueeze.data:_verify_one - IONQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:50 | DEBUG    | shortsqueeze.data:_verify_one - UUUU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:50 | DEBUG    | shortsqueeze.data:_verify_one - AMZD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:50 | DEBUG    | shortsqueeze.data:_verify_one - CLOZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:50 | DEBUG    | shortsqueeze.data:_verify_one - SCZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:50 | DEBUG    | shortsqueeze.data:_verify_one - GLWG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:50 | DEBUG    | shortsqueeze.data:_verify_one - BMNR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:50 | DEBUG    | shortsqueeze.data:_verify_one - MUD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:50 | DEBUG    | shortsqueeze.data:_verify_one - ABCL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:50 | DEBUG    | shortsqueeze.data:_verify_one - LVMUY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:50 | DEBUG    | shortsqueeze.data:_verify_one - BGMS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:51 | DEBUG    | shortsqueeze.data:_verify_one - GOCO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:51 | DEBUG    | shortsqueeze.data:_verify_one - HYSA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:51 | DEBUG    | shortsqueeze.data:_verify_one - RGTIW: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:51 | DEBUG    | shortsqueeze.data:_verify_one - AVS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:51 | DEBUG    | shortsqueeze.data:_verify_one - SXYAY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:51 | DEBUG    | shortsqueeze.data:_verify_one - BRTX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:51 | DEBUG    | shortsqueeze.data:_verify_one - XOP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - PSKY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - SPSK: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - IREZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - TYCMY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - PSQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - CHOW: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - YMAT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - AVEX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - HXHX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - CCHH: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - BLDG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:52 | DEBUG    | shortsqueeze.data:_verify_one - CTOS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:53 | DEBUG    | shortsqueeze.data:_verify_one - SMH: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:53 | DEBUG    | shortsqueeze.data:_verify_one - FSK: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:53 | DEBUG    | shortsqueeze.data:_verify_one - VRAX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:53 | DEBUG    | shortsqueeze.data:_verify_one - MTEN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:53 | DEBUG    | shortsqueeze.data:_verify_one - BCDA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:53 | DEBUG    | shortsqueeze.data:_verify_one - GPRO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:53 | DEBUG    | shortsqueeze.data:_verify_one - SDOT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:53 | DEBUG    | shortsqueeze.data:_verify_one - BITO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:53 | DEBUG    | shortsqueeze.data:_verify_one - HUMA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:54 | DEBUG    | shortsqueeze.data:_verify_one - EIDO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:54 | DEBUG    | shortsqueeze.data:_verify_one - GLD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:54 | DEBUG    | shortsqueeze.data:_verify_one - PJUN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:54 | DEBUG    | shortsqueeze.data:_verify_one - GOOGN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:54 | DEBUG    | shortsqueeze.data:_verify_one - IEFA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:54 | DEBUG    | shortsqueeze.data:_verify_one - VVOS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:54 | DEBUG    | shortsqueeze.data:_verify_one - CTLHF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:54 | DEBUG    | shortsqueeze.data:_verify_one - LI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:55 | DEBUG    | shortsqueeze.data:_verify_one - SMBS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:55 | DEBUG    | shortsqueeze.data:_verify_one - EVTV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:55 | DEBUG    | shortsqueeze.data:_verify_one - ACYN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:55 | DEBUG    | shortsqueeze.data:_verify_one - XXRP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:55 | DEBUG    | shortsqueeze.data:_verify_one - INDA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:55 | DEBUG    | shortsqueeze.data:_verify_one - IREN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:55 | DEBUG    | shortsqueeze.data:_verify_one - CRWU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:55 | DEBUG    | shortsqueeze.data:_verify_one - CIEG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:56 | DEBUG    | shortsqueeze.data:_verify_one - PECER: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:56 | DEBUG    | shortsqueeze.data:_verify_one - AVGG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:56 | DEBUG    | shortsqueeze.data:_verify_one - CLDI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:56 | DEBUG    | shortsqueeze.data:_verify_one - QUCY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:56 | DEBUG    | shortsqueeze.data:_verify_one - KWEB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:56 | DEBUG    | shortsqueeze.data:_verify_one - NUCLW: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:56 | DEBUG    | shortsqueeze.data:_verify_one - IDHQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:56 | DEBUG    | shortsqueeze.data:_verify_one - COSM: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:56 | DEBUG    | shortsqueeze.data:_verify_one - FNGU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:56 | DEBUG    | shortsqueeze.data:_verify_one - XOVL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:56 | DEBUG    | shortsqueeze.data:_verify_one - SATG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:57 | DEBUG    | shortsqueeze.data:_verify_one - IWM: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:57 | DEBUG    | shortsqueeze.data:_verify_one - VCIG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:57 | DEBUG    | shortsqueeze.data:_verify_one - GDXJ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:57 | DEBUG    | shortsqueeze.data:_verify_one - AIB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:57 | DEBUG    | shortsqueeze.data:_verify_one - FNMAS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:57 | DEBUG    | shortsqueeze.data:_verify_one - SUGP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:57 | DEBUG    | shortsqueeze.data:_verify_one - TNYA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:57 | DEBUG    | shortsqueeze.data:_verify_one - CHRS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:57 | DEBUG    | shortsqueeze.data:_verify_one - QSR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:58 | DEBUG    | shortsqueeze.data:_verify_one - TOELY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:58 | DEBUG    | shortsqueeze.data:_verify_one - SPYU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:58 | DEBUG    | shortsqueeze.data:_verify_one - METU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:58 | DEBUG    | shortsqueeze.data:_verify_one - BTE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:58 | DEBUG    | shortsqueeze.data:_verify_one - TDI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:58 | DEBUG    | shortsqueeze.data:_verify_one - AGZD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:58 | DEBUG    | shortsqueeze.data:_verify_one - FEGE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:59 | DEBUG    | shortsqueeze.data:_verify_one - SOFX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:59 | DEBUG    | shortsqueeze.data:_verify_one - SMUP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:59 | DEBUG    | shortsqueeze.data:_verify_one - KRMN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:59 | DEBUG    | shortsqueeze.data:_verify_one - TTDU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:59 | DEBUG    | shortsqueeze.data:_verify_one - TXUE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:59 | DEBUG    | shortsqueeze.data:_verify_one - LGHL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:00:59 | DEBUG    | shortsqueeze.data:_verify_one - SUZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:00 | DEBUG    | shortsqueeze.data:_verify_one - IYZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:00 | DEBUG    | shortsqueeze.data:_verify_one - HPQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:00 | DEBUG    | shortsqueeze.data:_verify_one - DIA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:00 | DEBUG    | shortsqueeze.data:_verify_one - FLMI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:00 | DEBUG    | shortsqueeze.data:_verify_one - POAS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:00 | DEBUG    | shortsqueeze.data:_verify_one - RWM: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:00 | DEBUG    | shortsqueeze.data:_verify_one - QS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:01 | DEBUG    | shortsqueeze.data:_verify_one - GCDT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:01 | DEBUG    | shortsqueeze.data:_verify_one - CGC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:01 | DEBUG    | shortsqueeze.data:_verify_one - RCAX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:01 | DEBUG    | shortsqueeze.data:_verify_one - BITU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:01 | DEBUG    | shortsqueeze.data:_verify_one - VMAR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:01 | DEBUG    | shortsqueeze.data:_verify_one - GXAI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:01 | DEBUG    | shortsqueeze.data:_verify_one - RDWU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:02 | DEBUG    | shortsqueeze.data:_verify_one - CHLSY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:02 | DEBUG    | shortsqueeze.data:_verify_one - SHZHY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:02 | DEBUG    | shortsqueeze.data:_verify_one - GETY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:02 | DEBUG    | shortsqueeze.data:_verify_one - MSS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:02 | DEBUG    | shortsqueeze.data:_verify_one - JHX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:02 | DEBUG    | shortsqueeze.data:_verify_one - EPMLF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:02 | DEBUG    | shortsqueeze.data:_verify_one - OKLS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:03 | DEBUG    | shortsqueeze.data:_verify_one - TGB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:03 | DEBUG    | shortsqueeze.data:_verify_one - ISVLF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:03 | DEBUG    | shortsqueeze.data:_verify_one - TUR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:03 | DEBUG    | shortsqueeze.data:_verify_one - WSE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:03 | DEBUG    | shortsqueeze.data:_verify_one - ZENA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:03 | DEBUG    | shortsqueeze.data:_verify_one - CTNT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:03 | DEBUG    | shortsqueeze.data:_verify_one - RGTI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:04 | DEBUG    | shortsqueeze.data:_verify_one - IONX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:04 | DEBUG    | shortsqueeze.data:_verify_one - LUNL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:04 | DEBUG    | shortsqueeze.data:_verify_one - EMB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:04 | DEBUG    | shortsqueeze.data:_verify_one - NFXL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:04 | DEBUG    | shortsqueeze.data:_verify_one - ZJUN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:04 | DEBUG    | shortsqueeze.data:_verify_one - SNDG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:04 | DEBUG    | shortsqueeze.data:_verify_one - APLX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:05 | DEBUG    | shortsqueeze.data:_verify_one - XLI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:05 | DEBUG    | shortsqueeze.data:_verify_one - TDIC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:05 | DEBUG    | shortsqueeze.data:_verify_one - NOK: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:05 | DEBUG    | shortsqueeze.data:_verify_one - WRDLY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:05 | DEBUG    | shortsqueeze.data:_verify_one - UVXY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:05 | DEBUG    | shortsqueeze.data:_verify_one - SIMAW: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:05 | DEBUG    | shortsqueeze.data:_verify_one - TU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:05 | DEBUG    | shortsqueeze.data:_verify_one - LHSW: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:06 | DEBUG    | shortsqueeze.data:_verify_one - IVA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:06 | DEBUG    | shortsqueeze.data:_verify_one - CXDO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:06 | DEBUG    | shortsqueeze.data:_verify_one - XMAX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:06 | DEBUG    | shortsqueeze.data:_verify_one - EQX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:06 | DEBUG    | shortsqueeze.data:_verify_one - ARAI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:06 | DEBUG    | shortsqueeze.data:_verify_one - PSIG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:06 | DEBUG    | shortsqueeze.data:_verify_one - SSACR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:06 | DEBUG    | shortsqueeze.data:_verify_one - QBTS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:07 | DEBUG    | shortsqueeze.data:_verify_one - WCT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:07 | DEBUG    | shortsqueeze.data:_verify_one - GDXU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:07 | DEBUG    | shortsqueeze.data:_verify_one - ETHT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:07 | DEBUG    | shortsqueeze.data:_verify_one - UMAV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:07 | DEBUG    | shortsqueeze.data:_verify_one - PTAIY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:07 | DEBUG    | shortsqueeze.data:_verify_one - UMC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:07 | DEBUG    | shortsqueeze.data:_verify_one - IQST: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:07 | DEBUG    | shortsqueeze.data:_verify_one - ONCY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:08 | DEBUG    | shortsqueeze.data:_verify_one - SMST: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:08 | DEBUG    | shortsqueeze.data:_verify_one - ONDG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:08 | DEBUG    | shortsqueeze.data:_verify_one - ZPHYF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:08 | DEBUG    | shortsqueeze.data:_verify_one - RUBI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:08 | DEBUG    | shortsqueeze.data:_verify_one - BTQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:08 | DEBUG    | shortsqueeze.data:_verify_one - MSW: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:09 | DEBUG    | shortsqueeze.data:_verify_one - FER: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:09 | DEBUG    | shortsqueeze.data:_verify_one - BNZI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:09 | DEBUG    | shortsqueeze.data:_verify_one - FLY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:09 | DEBUG    | shortsqueeze.data:_verify_one - BLND: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:09 | DEBUG    | shortsqueeze.data:_verify_one - SATA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:09 | DEBUG    | shortsqueeze.data:_verify_one - GCTS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:09 | DEBUG    | shortsqueeze.data:_verify_one - VXX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:10 | DEBUG    | shortsqueeze.data:_verify_one - DEFT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:10 | DEBUG    | shortsqueeze.data:_verify_one - GLXG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:10 | DEBUG    | shortsqueeze.data:_verify_one - NVDX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:10 | DEBUG    | shortsqueeze.data:_verify_one - SHYD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:10 | DEBUG    | shortsqueeze.data:_verify_one - HWH: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:10 | DEBUG    | shortsqueeze.data:_verify_one - HCWB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:10 | DEBUG    | shortsqueeze.data:_verify_one - WRD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:10 | DEBUG    | shortsqueeze.data:_verify_one - RCRUY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:11 | DEBUG    | shortsqueeze.data:_verify_one - QBTX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:11 | DEBUG    | shortsqueeze.data:_verify_one - LCDL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:11 | DEBUG    | shortsqueeze.data:_verify_one - ORKA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:11 | DEBUG    | shortsqueeze.data:_verify_one - ARMG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:12 | DEBUG    | shortsqueeze.data:_verify_one - FOTO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:12 | DEBUG    | shortsqueeze.data:_verify_one - ALKEF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:12 | DEBUG    | shortsqueeze.data:_verify_one - AMD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:12 | DEBUG    | shortsqueeze.data:_verify_one - PIIIW: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:12 | DEBUG    | shortsqueeze.data:_verify_one - TSLT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:12 | DEBUG    | shortsqueeze.data:_verify_one - NI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:12 | DEBUG    | shortsqueeze.data:_verify_one - PLTD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:13 | DEBUG    | shortsqueeze.data:_verify_one - DLXY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:13 | DEBUG    | shortsqueeze.data:_verify_one - LIMN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:13 | DEBUG    | shortsqueeze.data:_verify_one - ALOY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:13 | DEBUG    | shortsqueeze.data:_verify_one - FPE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:13 | DEBUG    | shortsqueeze.data:_verify_one - NCIQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:13 | DEBUG    | shortsqueeze.data:_verify_one - URG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:13 | DEBUG    | shortsqueeze.data:_verify_one - WB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:13 | DEBUG    | shortsqueeze.data:_verify_one - BORR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:14 | DEBUG    | shortsqueeze.data:_verify_one - EU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:14 | DEBUG    | shortsqueeze.data:_verify_one - RWR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:14 | DEBUG    | shortsqueeze.data:_verify_one - INV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:14 | DEBUG    | shortsqueeze.data:_verify_one - CORD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:14 | DEBUG    | shortsqueeze.data:_verify_one - FTSM: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:14 | DEBUG    | shortsqueeze.data:_verify_one - IVLU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:14 | DEBUG    | shortsqueeze.data:_verify_one - SNDU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:15 | DEBUG    | shortsqueeze.data:_verify_one - GLXU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:15 | DEBUG    | shortsqueeze.data:_verify_one - GRAN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:15 | DEBUG    | shortsqueeze.data:_verify_one - SFL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:15 | DEBUG    | shortsqueeze.data:_verify_one - BN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:15 | DEBUG    | shortsqueeze.data:_verify_one - ARBE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:15 | DEBUG    | shortsqueeze.data:_verify_one - EH: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:15 | DEBUG    | shortsqueeze.data:_verify_one - SABR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:15 | DEBUG    | shortsqueeze.data:_verify_one - NAMI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:16 | DEBUG    | shortsqueeze.data:_verify_one - OPEN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:16 | DEBUG    | shortsqueeze.data:_verify_one - AVGU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:16 | DEBUG    | shortsqueeze.data:_verify_one - LWLG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:16 | DEBUG    | shortsqueeze.data:_verify_one - GGT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:16 | DEBUG    | shortsqueeze.data:_verify_one - EWG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:16 | DEBUG    | shortsqueeze.data:_verify_one - NWGL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:16 | DEBUG    | shortsqueeze.data:_verify_one - GSBD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:16 | DEBUG    | shortsqueeze.data:_verify_one - BSJU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:16 | DEBUG    | shortsqueeze.data:_verify_one - GLL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:16 | DEBUG    | shortsqueeze.data:_verify_one - DAPP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:17 | DEBUG    | shortsqueeze.data:_verify_one - HUBCW: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:17 | DEBUG    | shortsqueeze.data:_verify_one - ALAB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:17 | DEBUG    | shortsqueeze.data:_verify_one - ELAB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:17 | DEBUG    | shortsqueeze.data:_verify_one - NVO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:17 | DEBUG    | shortsqueeze.data:_verify_one - TECK: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:17 | DEBUG    | shortsqueeze.data:_verify_one - CSAN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:17 | DEBUG    | shortsqueeze.data:_verify_one - SATL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:17 | DEBUG    | shortsqueeze.data:_verify_one - GNT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:18 | DEBUG    | shortsqueeze.data:_verify_one - SCHR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:18 | DEBUG    | shortsqueeze.data:_verify_one - JZXN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:18 | DEBUG    | shortsqueeze.data:_verify_one - IVCTF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:18 | DEBUG    | shortsqueeze.data:_verify_one - CAE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:18 | DEBUG    | shortsqueeze.data:_verify_one - YXT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:18 | DEBUG    | shortsqueeze.data:_verify_one - STEX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:18 | DEBUG    | shortsqueeze.data:_verify_one - OPAD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:18 | DEBUG    | shortsqueeze.data:_verify_one - DWSH: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:18 | DEBUG    | shortsqueeze.data:_verify_one - FTRAU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:19 | DEBUG    | shortsqueeze.data:_verify_one - OTEX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:19 | DEBUG    | shortsqueeze.data:_verify_one - BMGL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:19 | DEBUG    | shortsqueeze.data:_verify_one - AZMCF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:19 | DEBUG    | shortsqueeze.data:_verify_one - SHNY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:19 | DEBUG    | shortsqueeze.data:_verify_one - BABA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:19 | DEBUG    | shortsqueeze.data:_verify_one - SOLT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:19 | DEBUG    | shortsqueeze.data:_verify_one - MSBT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:20 | DEBUG    | shortsqueeze.data:_verify_one - VGK: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:20 | DEBUG    | shortsqueeze.data:_verify_one - OMH: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:20 | DEBUG    | shortsqueeze.data:_verify_one - KDDIY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:20 | DEBUG    | shortsqueeze.data:_verify_one - NBIL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:20 | DEBUG    | shortsqueeze.data:_verify_one - SRFM: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:20 | DEBUG    | shortsqueeze.data:_verify_one - BOIL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:20 | DEBUG    | shortsqueeze.data:_verify_one - OCS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:20 | DEBUG    | shortsqueeze.data:_verify_one - WISE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:21 | DEBUG    | shortsqueeze.data:_verify_one - HBMX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:21 | DEBUG    | shortsqueeze.data:_verify_one - PALU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:21 | DEBUG    | shortsqueeze.data:_verify_one - TRUFF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:21 | DEBUG    | shortsqueeze.data:_verify_one - NXXT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:21 | DEBUG    | shortsqueeze.data:_verify_one - IBB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:21 | DEBUG    | shortsqueeze.data:_verify_one - BCE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:21 | DEBUG    | shortsqueeze.data:_verify_one - SOLZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:21 | DEBUG    | shortsqueeze.data:_verify_one - GOVI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:22 | DEBUG    | shortsqueeze.data:_verify_one - FWDI: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:22 | DEBUG    | shortsqueeze.data:_verify_one - GMEU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:22 | DEBUG    | shortsqueeze.data:_verify_one - MAXXF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:22 | DEBUG    | shortsqueeze.data:_verify_one - CODX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:22 | DEBUG    | shortsqueeze.data:_verify_one - XCEM: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:22 | DEBUG    | shortsqueeze.data:_verify_one - UJUN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:22 | DEBUG    | shortsqueeze.data:_verify_one - DTEGY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:22 | DEBUG    | shortsqueeze.data:_verify_one - NFLU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:23 | DEBUG    | shortsqueeze.data:_verify_one - FITZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:23 | DEBUG    | shortsqueeze.data:_verify_one - LFS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:23 | DEBUG    | shortsqueeze.data:_verify_one - HAO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:23 | DEBUG    | shortsqueeze.data:_verify_one - FANCF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:23 | DEBUG    | shortsqueeze.data:_verify_one - ITB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:23 | DEBUG    | shortsqueeze.data:_verify_one - TINY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:24 | DEBUG    | shortsqueeze.data:_verify_one - SKYQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:24 | DEBUG    | shortsqueeze.data:_verify_one - LULU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:24 | DEBUG    | shortsqueeze.data:_verify_one - IYR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:24 | DEBUG    | shortsqueeze.data:_verify_one - SKYE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:24 | DEBUG    | shortsqueeze.data:_verify_one - EQPT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:24 | DEBUG    | shortsqueeze.data:_verify_one - ZSL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:24 | DEBUG    | shortsqueeze.data:_verify_one - VTEB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:24 | DEBUG    | shortsqueeze.data:_verify_one - ICL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:25 | DEBUG    | shortsqueeze.data:_verify_one - AXXA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:25 | DEBUG    | shortsqueeze.data:_verify_one - SPRE: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:25 | DEBUG    | shortsqueeze.data:_verify_one - USBC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:25 | DEBUG    | shortsqueeze.data:_verify_one - LIQT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:25 | DEBUG    | shortsqueeze.data:_verify_one - BKDV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:25 | DEBUG    | shortsqueeze.data:_verify_one - SHMD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:25 | DEBUG    | shortsqueeze.data:_verify_one - WFAFY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:25 | DEBUG    | shortsqueeze.data:_verify_one - PATN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:26 | DEBUG    | shortsqueeze.data:_verify_one - LAR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:26 | DEBUG    | shortsqueeze.data:_verify_one - LABD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:26 | DEBUG    | shortsqueeze.data:_verify_one - ENHA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:26 | DEBUG    | shortsqueeze.data:_verify_one - GXPT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:26 | DEBUG    | shortsqueeze.data:_verify_one - JTEK: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:26 | DEBUG    | shortsqueeze.data:_verify_one - UNHG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:26 | DEBUG    | shortsqueeze.data:_verify_one - BDYN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:26 | DEBUG    | shortsqueeze.data:_verify_one - MBOT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:26 | DEBUG    | shortsqueeze.data:_verify_one - BIZD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:27 | DEBUG    | shortsqueeze.data:_verify_one - NLST: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:27 | DEBUG    | shortsqueeze.data:_verify_one - MRVL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:27 | DEBUG    | shortsqueeze.data:_verify_one - NSPR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:27 | DEBUG    | shortsqueeze.data:_verify_one - PZA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:27 | DEBUG    | shortsqueeze.data:_verify_one - KALV: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:27 | DEBUG    | shortsqueeze.data:_verify_one - MODL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:27 | DEBUG    | shortsqueeze.data:_verify_one - TNA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:28 | DEBUG    | shortsqueeze.data:_verify_one - UCO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:28 | DEBUG    | shortsqueeze.data:_verify_one - HIRU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:28 | DEBUG    | shortsqueeze.data:_verify_one - RPGL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:28 | DEBUG    | shortsqueeze.data:_verify_one - DSVSF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:28 | DEBUG    | shortsqueeze.data:_verify_one - AMDD: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:28 | DEBUG    | shortsqueeze.data:_verify_one - MO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:28 | DEBUG    | shortsqueeze.data:_verify_one - GDX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:28 | DEBUG    | shortsqueeze.data:_verify_one - MTA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:28 | DEBUG    | shortsqueeze.data:_verify_one - FEBZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:29 | DEBUG    | shortsqueeze.data:_verify_one - GGDCF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:29 | DEBUG    | shortsqueeze.data:_verify_one - UAVS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:29 | DEBUG    | shortsqueeze.data:_verify_one - BNRG: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:29 | DEBUG    | shortsqueeze.data:_verify_one - AZTR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:29 | DEBUG    | shortsqueeze.data:_verify_one - CEGX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:29 | DEBUG    | shortsqueeze.data:_verify_one - ABAT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:29 | DEBUG    | shortsqueeze.data:_verify_one - VSA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:29 | DEBUG    | shortsqueeze.data:_verify_one - MSOX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:30 | DEBUG    | shortsqueeze.data:_verify_one - FIGR: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:30 | DEBUG    | shortsqueeze.data:_verify_one - QPUX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:30 | DEBUG    | shortsqueeze.data:_verify_one - NBLXF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:30 | DEBUG    | shortsqueeze.data:_verify_one - SPXS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:30 | DEBUG    | shortsqueeze.data:_verify_one - SAUHY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:30 | DEBUG    | shortsqueeze.data:_verify_one - AVCNF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:30 | DEBUG    | shortsqueeze.data:_verify_one - CIB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:30 | DEBUG    | shortsqueeze.data:_verify_one - MYO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:31 | DEBUG    | shortsqueeze.data:_verify_one - RETL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:31 | DEBUG    | shortsqueeze.data:_verify_one - MSOS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:31 | DEBUG    | shortsqueeze.data:_verify_one - TMSL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:31 | DEBUG    | shortsqueeze.data:_verify_one - VLRS: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:31 | DEBUG    | shortsqueeze.data:_verify_one - KMB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:31 | DEBUG    | shortsqueeze.data:_verify_one - AGQ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:31 | DEBUG    | shortsqueeze.data:_verify_one - JHLN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:31 | DEBUG    | shortsqueeze.data:_verify_one - LUCRF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:32 | DEBUG    | shortsqueeze.data:_verify_one - GASNY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:32 | DEBUG    | shortsqueeze.data:_verify_one - HTCO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:32 | DEBUG    | shortsqueeze.data:_verify_one - ZNB: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:32 | DEBUG    | shortsqueeze.data:_verify_one - EVMT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:32 | DEBUG    | shortsqueeze.data:_verify_one - LTRYW: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:32 | DEBUG    | shortsqueeze.data:_verify_one - SHPU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:32 | DEBUG    | shortsqueeze.data:_verify_one - RAAX: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:32 | DEBUG    | shortsqueeze.data:_verify_one - ACCL: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:33 | DEBUG    | shortsqueeze.data:_verify_one - LITZ: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:33 | DEBUG    | shortsqueeze.data:_verify_one - FTMA: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:33 | DEBUG    | shortsqueeze.data:_verify_one - KITT: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:33 | DEBUG    | shortsqueeze.data:_verify_one - DSEAF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:33 | DEBUG    | shortsqueeze.data:_verify_one - CPSU: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:33 | DEBUG    | shortsqueeze.data:_verify_one - EDGF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:33 | DEBUG    | shortsqueeze.data:_verify_one - GHVNF: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:33 | DEBUG    | shortsqueeze.data:_verify_one - SNN: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:34 | DEBUG    | shortsqueeze.data:_verify_one - UEC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:34 | DEBUG    | shortsqueeze.data:_verify_one - CSWC: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:34 | DEBUG    | shortsqueeze.data:_verify_one - LFTO: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:34 | DEBUG    | shortsqueeze.data:_verify_one - BHYP: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:34 | DEBUG    | shortsqueeze.data:_verify_one - MSTY: No short float data from Yahoo or Finviz, dropping (unverified)
+2026-07-02 03:01:34 | INFO     | shortsqueeze.data:_verify_with_yahoo - Dropped 582 candidates during verification (unverified or missing price)
+2026-07-02 03:01:34 | INFO     | shortsqueeze.data:get_squeeze_candidates - Final watchlist: 147 verified squeeze candidates
+2026-07-02 03:01:34 | DEBUG    | shortsqueeze.universe:_apply_filters_no_price - Filtered from 147 to 111 candidates (before price split)
+2026-07-02 03:01:34 | INFO     | shortsqueeze.universe:save_watchlists - Saved watchlists: 90 quality ($5+), 19 speculative (<$5)
+2026-07-02 03:01:34 | INFO     | shortsqueeze.universe:refresh_watchlist - Watchlists refreshed: 90 quality ($5+), 19 speculative ($1.0-$5.0)
+2026-07-02 03:01:34 | INFO     | shortsqueeze.bot:_refresh_watchlist - Watchlist refreshed: 109 candidates
+2026-07-02 03:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 03:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 04:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:32:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:37:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:42:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:47:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:52:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 05:57:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 06:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 06:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 06:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 06:17:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 06:22:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 06:27:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 06:32:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 06:32:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 06:37:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 06:37:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 06:42:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 06:42:12 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 06:47:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 06:47:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 06:52:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 06:52:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 06:57:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 06:57:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:02:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:02:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:07:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:07:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:12:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:12:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:17:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:17:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:22:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:22:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:27:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:27:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:32:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:32:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:37:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:37:10 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:42:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:42:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:47:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:47:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:52:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:52:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 07:57:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 07:57:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:02:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:02:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:07:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:07:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:12:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:12:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:17:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:17:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:22:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:22:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:27:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:27:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:32:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:32:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:37:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:37:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:42:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:42:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:47:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:47:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:52:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:52:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 08:57:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 08:57:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:02:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:02:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:07:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:07:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:12:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:12:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:17:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:17:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:22:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:22:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:27:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:27:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:32:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:32:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:37:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:37:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:42:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:42:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:47:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:47:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:52:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:52:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 09:57:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 09:57:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:02:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:02:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:07:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:07:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:12:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:12:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:17:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:17:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:22:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:22:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:27:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:27:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:32:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:32:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:37:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:37:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:42:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:42:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:47:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:47:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:52:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:52:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 10:57:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 10:57:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:02:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:02:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:07:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:07:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:12:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:12:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:17:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:17:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:22:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:22:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:27:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:27:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:32:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:32:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:37:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:37:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:42:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:42:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:47:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:47:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:52:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:52:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 11:57:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 11:57:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:02:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:02:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:07:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:07:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:12:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:12:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:17:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:17:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:22:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:22:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:27:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:27:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:32:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:32:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:37:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:37:08 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:42:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:42:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:47:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:47:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:52:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:52:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 12:57:08 | INFO     | shortsqueeze.bot:_run_scan - Running intraday scan...
+2026-07-02 12:57:09 | INFO     | shortsqueeze.bot:_run_scan - Max positions (5) reached. Skipping scan.
+2026-07-02 13:02:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 13:07:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
+2026-07-02 13:12:08 | DEBUG    | shortsqueeze.bot:_run_scan - Market closed, skipping scan
