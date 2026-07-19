@@ -68,6 +68,12 @@ class ShortSqueezeBot:
         self._position_highs: dict[str, float] = {}
         self._position_first_seen: dict[str, datetime] = {}
         self._last_portfolio_log: Optional[datetime] = None
+        # Stale-quote detection: per ticker, the last-seen unrealized P&L% and
+        # how many consecutive monitor ticks (≈minutes) it has been unchanged.
+        # A halted/stale feed shows a byte-identical plpc for many minutes;
+        # _stale_warned dedupes the warning to once per stale streak.
+        self._position_plpc_streak: dict[str, tuple[float, int]] = {}
+        self._stale_warned: set[str] = set()
 
     def start(self) -> None:
         """Start the trading bot."""
@@ -195,6 +201,12 @@ class ShortSqueezeBot:
                 return
 
             positions = self.broker_data.get_positions()
+            if positions is None:
+                # Fetch failed (post-retry). Skip the scan rather than treat an
+                # empty result as "0 positions held" — that would bypass the
+                # max-positions guard below and risk over-buying.
+                logger.warning("Position fetch failed; skipping scan tick")
+                return
             self._update_position_tracking(positions)
             current_position_count = len(positions)
 
@@ -247,6 +259,8 @@ class ShortSqueezeBot:
             self._recent_exits[ticker] = now_et
             self._position_highs.pop(ticker, None)
             self._position_first_seen.pop(ticker, None)
+            self._position_plpc_streak.pop(ticker, None)
+            self._stale_warned.discard(ticker)
             logger.debug(
                 f"{ticker}: position closed; re-entry cooldown started "
                 f"({self.config.risk.reentry_cooldown_minutes}min)"
@@ -271,6 +285,34 @@ class ShortSqueezeBot:
             for t, ts in self._recent_exits.items()
             if (now_et - ts).total_seconds() / 60 < cooldown
         }
+
+    def _check_stale_quote(self, ticker: str, plpc: float) -> None:
+        """Warn once when a position's unrealized P&L% is frozen too long.
+
+        Called on each 1-minute monitor tick, so the consecutive-unchanged
+        count is ~minutes. A live quote fluctuates; a byte-identical plpc for
+        stale_quote_alert_minutes straight means a halted or stale feed
+        (e.g. a position stuck at a constant +1.0% for days). Alert-only —
+        force-selling on suspected-bad data is riskier than surfacing it; the
+        max-hold-time exit remains the backstop.
+        """
+        key = ticker.upper()
+        threshold = self.config.risk.stale_quote_alert_minutes
+        last = self._position_plpc_streak.get(key)
+
+        if last is not None and last[0] == plpc:
+            count = last[1] + 1
+        else:
+            count = 1
+            self._stale_warned.discard(key)  # value moved; re-arm the warning
+        self._position_plpc_streak[key] = (plpc, count)
+
+        if count >= threshold and key not in self._stale_warned:
+            self._stale_warned.add(key)
+            logger.warning(
+                f"{ticker}: quote appears stale — unrealized P&L frozen at "
+                f"{plpc * 100:+.1f}% for {count} min; check for a halt/data issue"
+            )
 
     def _log_portfolio_snapshot(self, positions: list) -> None:
         """Log held positions (P&L, age) at most once per hour.
@@ -410,6 +452,13 @@ class ShortSqueezeBot:
 
         try:
             positions = self.broker_data.get_positions()
+            if positions is None:
+                # Fetch failed (post-retry). Skip this tick without touching
+                # tracking state — treating it as an empty book would falsely
+                # register every held position as closed, wiping high-water
+                # marks, resetting max-hold clocks, and mis-stamping cooldowns.
+                logger.warning("Position fetch failed; skipping monitor tick")
+                return
             self._update_position_tracking(positions)
 
             if not positions:
@@ -421,6 +470,9 @@ class ShortSqueezeBot:
                 ticker = position["symbol"]
                 current_price = position["current_price"]
                 entry_price = position["avg_entry_price"]
+
+                # Flag a halted/stale quote (P&L% frozen for many minutes).
+                self._check_stale_quote(ticker, position.get("unrealized_plpc", 0))
 
                 # Supply the tracked high-water mark so the trailing stop has a
                 # real high to trail from (Alpaca's position payload has no such
@@ -521,8 +573,8 @@ class ShortSqueezeBot:
                 "buying_power": account["buying_power"],
             }
 
-            # Get positions
-            positions = self.broker_data.get_positions()
+            # Get positions ([] also covers a failed fetch here — reporting only)
+            positions = self.broker_data.get_positions() or []
             result["positions"] = len(positions)
 
             # Run scan
@@ -549,7 +601,7 @@ class ShortSqueezeBot:
     def get_status(self) -> dict:
         """Get current bot status."""
         account = self.broker_data.get_account()
-        positions = self.broker_data.get_positions()
+        positions = self.broker_data.get_positions() or []
         watchlist_summary = self.watchlist.get_summary()
 
         return {
@@ -584,7 +636,7 @@ class ShortSqueezeBot:
 
         # Get account
         account = self.broker_data.get_account()
-        positions = self.broker_data.get_positions()
+        positions = self.broker_data.get_positions() or []
 
         # Calculate position size
         position_size = self.position_sizer.calculate_position_size(
