@@ -86,6 +86,10 @@ class RiskConfig:
     # Force-exit positions held this many days without resolving: a squeeze
     # thesis decays in days, and stale positions deadlock the position slots.
     max_hold_days: int = 5
+    # Warn when a held position's unrealized P&L% hasn't moved at all for this
+    # many minutes — a halted/stale quote (e.g. a position frozen at a constant
+    # +1.0% for days) that would otherwise sit invisibly in a slot.
+    stale_quote_alert_minutes: int = 60
 
 
 @dataclass

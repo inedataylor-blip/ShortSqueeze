@@ -90,13 +90,16 @@ class BrokerDataClient(ABC):
         """
 
     @abstractmethod
-    def get_positions(self) -> list:
+    def get_positions(self) -> Optional[list]:
         """
         Get all open positions.
 
         Returns:
             List of dicts, each with keys: symbol, qty, side, market_value,
-            cost_basis, unrealized_pl, unrealized_plpc, current_price, avg_entry_price
+            cost_basis, unrealized_pl, unrealized_plpc, current_price,
+            avg_entry_price. Empty list when the book is genuinely flat.
+            None on terminal fetch failure (distinct from [] so callers can
+            skip the tick rather than treat a dropped fetch as "no positions").
         """
 
     @abstractmethod

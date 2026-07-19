@@ -270,13 +270,20 @@ class AlpacaDataClient(BrokerDataClient):
             "avg_entry_price": float(pos.avg_entry_price),
         } for pos in positions]
 
-    def get_positions(self) -> list:
-        """Get all open positions. Returns [] on terminal failure (post-retry)."""
+    def get_positions(self) -> Optional[list]:
+        """Get all open positions.
+
+        Returns a list (possibly empty when the book is genuinely flat), or
+        None on terminal failure after retries. None is deliberately distinct
+        from [] so callers don't mistake a dropped fetch for "no positions" —
+        treating a failed fetch as flat would wipe position-tracking state and
+        bypass the max-positions guard.
+        """
         try:
             return self._get_positions_with_retry()
         except Exception as e:
             logger.error(f"Error fetching positions: {e}")
-            return []
+            return None
 
     def get_position(self, symbol: str) -> Optional[dict]:
         """Get position for a specific symbol."""
