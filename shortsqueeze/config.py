@@ -90,6 +90,11 @@ class RiskConfig:
     # many minutes — a halted/stale quote (e.g. a position frozen at a constant
     # +1.0% for days) that would otherwise sit invisibly in a slot.
     stale_quote_alert_minutes: int = 60
+    # Stop re-entering a ticker once it has stopped out this many times in a
+    # single session. The re-entry cooldown only delays re-entry into the same
+    # chop; a small-cap that keeps signalling can otherwise be bought and
+    # stopped 3+ times a day (e.g. STIM). Counter resets at the daily refresh.
+    max_daily_stopouts_per_ticker: int = 2
 
 
 @dataclass

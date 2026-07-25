@@ -74,6 +74,9 @@ class ShortSqueezeBot:
         # _stale_warned dedupes the warning to once per stale streak.
         self._position_plpc_streak: dict[str, tuple[float, int]] = {}
         self._stale_warned: set[str] = set()
+        # Per-ticker count of exits within the current session, so a chop magnet
+        # can't be re-entered indefinitely. Reset at the daily watchlist refresh.
+        self._daily_stopouts: dict[str, int] = {}
 
     def start(self) -> None:
         """Start the trading bot."""
@@ -257,6 +260,7 @@ class ShortSqueezeBot:
 
         for ticker in self._held_tickers - current:
             self._recent_exits[ticker] = now_et
+            self._daily_stopouts[ticker] = self._daily_stopouts.get(ticker, 0) + 1
             self._position_highs.pop(ticker, None)
             self._position_first_seen.pop(ticker, None)
             self._position_plpc_streak.pop(ticker, None)
@@ -410,6 +414,18 @@ class ShortSqueezeBot:
                 )
                 return
 
+        # Same-day chop guard: once a ticker has stopped out this many times
+        # today, stop re-entering it — the cooldown alone only delays another
+        # bite at the same chop.
+        stopouts = self._daily_stopouts.get(ticker.upper(), 0)
+        max_stopouts = self.config.risk.max_daily_stopouts_per_ticker
+        if stopouts >= max_stopouts:
+            logger.info(
+                f"Skipping {ticker}: {stopouts} stop-out(s) today "
+                f"(max {max_stopouts}); no more re-entries this session"
+            )
+            return
+
         # Calculate position size
         position_size = self.position_sizer.calculate_position_size(
             signal=signal,
@@ -534,6 +550,9 @@ class ShortSqueezeBot:
     def _refresh_watchlist(self) -> None:
         """Force refresh the watchlist."""
         logger.info("Refreshing watchlist...")
+        # New session: clear the per-ticker daily stop-out counts so a name
+        # that chopped out yesterday is eligible again today.
+        self._daily_stopouts.clear()
         try:
             df = self.watchlist.refresh_watchlist(force=True)
             logger.info(f"Watchlist refreshed: {len(df)} candidates")
